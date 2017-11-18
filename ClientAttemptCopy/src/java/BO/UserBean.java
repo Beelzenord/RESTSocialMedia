@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client;
+package BO;
 
+import client.NewJerseyClient;
+import parser.XMLParsingUser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,38 +81,10 @@ public class UserBean {
       // it should excute the thing
        parser = new XMLParsingUser();
        UserBean tmp =parser.verifyLogingUser(this.username, this.password);
-  /*     NewJerseyClient client = new NewJerseyClient();
-       String log = client.login_XML(String.class, "u1", "u1");
-       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-       DocumentBuilder builder = factory.newDocumentBuilder();
-       InputStream inputStream = new    ByteArrayInputStream(log.getBytes());
-       org.w3c.dom.Document document = builder.parse(inputStream);
-        
-       NodeList nList = document.getElementsByTagName("tUsers"); 
-        
-        
-          for (int temp = 0; temp < nList.getLength(); temp++) {
-                 
-		Node nNode = nList.item(temp);
-                //nNode.get
-              // System.out.println(nNode.getChildNodes().item(1).getTextContent());
-		System.out.println("\nCurrent Element :" + nNode.getNodeName());
-               
-		if (nNode.getNodeType() == Node.ELEMENT_NODE)  {
-                  // doc.getElementsByTagName()
-			Element eElement = (Element) nNode;
-                        //eElement.getElementsByTagName("id").item(0).getTextContent());
-			setOccupation(eElement.getElementsByTagName("occupation").item(0).getTextContent());
-			this.username = eElement.getElementsByTagName("username").item(0).getTextContent();
-			this.password= eElement.getElementsByTagName("pass").item(0).getTextContent();
-
-		}
-             
-	}*/
-        
+  
        if(tmp!=null){
          //  this.occupation = tmp.getOccupation();
-           return "success";
+           return "main";
        }
        else{
            return "failure";

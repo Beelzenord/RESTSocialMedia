@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client;
+package parser;
 
+import client.NewJerseyClient;
+import BO.UserBean;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
