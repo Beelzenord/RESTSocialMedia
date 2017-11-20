@@ -6,6 +6,8 @@
 package Frontend.Viewmodels;
 
 import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -13,6 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Niklas
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TUsers implements Serializable{
     private Long id;
     private String username;
@@ -21,6 +24,23 @@ public class TUsers implements Serializable{
 
     public TUsers() {
         
+    }
+
+    public TUsers(Long id) {
+        this.id = id;
+    }
+
+    public TUsers(Long id, String username, String pass, String occupation) {
+        this.id = id;
+        this.username = username;
+        this.pass = pass;
+        this.occupation = occupation;
+    }
+
+    public TUsers(String username, String pass, String occupation) {
+        this.username = username;
+        this.pass = pass;
+        this.occupation = occupation;
     }
     
     public Long getId() {

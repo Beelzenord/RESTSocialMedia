@@ -34,7 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TPersonalLog.findAll", query = "SELECT t FROM TPersonalLog t")
     , @NamedQuery(name = "TPersonalLog.findById", query = "SELECT t FROM TPersonalLog t WHERE t.id = :id")
     , @NamedQuery(name = "TPersonalLog.findByText", query = "SELECT t FROM TPersonalLog t WHERE t.text = :text")
-    , @NamedQuery(name = "TPersonalLog.findByTimePosted", query = "SELECT t FROM TPersonalLog t WHERE t.timePosted = :timePosted")})
+    , @NamedQuery(name = "TPersonalLog.findByTimePosted", query = "SELECT t FROM TPersonalLog t WHERE t.timePosted = :timePosted")
+    , @NamedQuery(name = "TPersonalLog.findFromOneSender", query = "SELECT p FROM TPersonalLog p WHERE  p.senderid = :Sender_id")
+    })
 public class TPersonalLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,6 +56,12 @@ public class TPersonalLog implements Serializable {
     private TUsers senderid;
 
     public TPersonalLog() {
+    }
+
+    public TPersonalLog(String text, Date timePosted, TUsers senderid) {
+        this.text = text;
+        this.timePosted = timePosted;
+        this.senderid = senderid;
     }
 
     public TPersonalLog(Long id) {

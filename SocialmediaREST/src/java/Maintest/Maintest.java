@@ -5,7 +5,13 @@
  */
 package Maintest;
 
+import Frontend.Beans.PersonalLogBean;
+import Frontend.Beans.UsersBean;
 import Frontend.Clients.UsersClient;
+import Frontend.Viewmodels.TUsers;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ws.rs.core.GenericType;
 
 /**
  *
@@ -20,11 +26,35 @@ public class Maintest {
         t.setUsername("t5");
         t.setPass("t5");
         t.setOccupation("viewmodel");
-        c.create_XML(t);
+        //c.create_XML(t);
         System.out.println("hej");
-        Frontend.Viewmodels.TUsers u = c.login_XML(Frontend.Viewmodels.TUsers.class, "u1", "u1");
-        System.out.println(u.toString());
+        Frontend.Viewmodels.TUsers u = c.login_XML(new GenericType<Frontend.Viewmodels.TUsers>(){}, "u1", "u1");
+        System.out.println("Login\n" + u.toString() + "\n/login");
+        PersonalLogBean b = new PersonalLogBean();
+        b.setSendersID(new Long(1));
+        b.setText("test REST");
+        b.addPost();
+        System.out.println("post sent");
         
+        //ClientResponse clientResponse = new ClientResponse();
+        /*
+        ClientConfig config = new DefaultClientConfig();
+        config.getClasses().add(JacksonJaxbJsonProvider.class);
+        config.getFeatures().put(XMLConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+        */
+        //ClientResponse  cr = c.findRange_XML(ClientResponse.class , "2", "6");
+        GenericType<List<TUsers>> gType = new GenericType<List<TUsers>>(){}; 
+        
+        //List<TUsers> users = new ArrayList<TUsers>();
+        List<TUsers> users = c.findRange_XML(gType, "2", "6");
+        //users = (List<TUsers>) (cr.getEntity(gType));
+        //users=(List<TUsers>)(cr.getEntity(gType));
+        //users = (List<TUsers>)cr.getEntity(gType);
+        for (TUsers a : users) {
+            //System.out.println(a.toString());
+        }
+        
+//TUsers users = c.findRange_XML(TUsers.class , "2", "6");
     } catch (Exception e) {
 	e.printStackTrace();
     }

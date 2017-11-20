@@ -6,10 +6,13 @@
 package Backend.service;
 
 import Backend.entities.TPersonalLog;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -38,7 +41,13 @@ public class TPersonalLogFacadeREST extends AbstractFacade<TPersonalLog> {
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(TPersonalLog entity) {
+    public void create(TPersonalLog viewmodel) {
+        //entity.getSenderid()
+        TPersonalLog entity = new TPersonalLog(
+            viewmodel.getText(), 
+            viewmodel.getTimePosted(), 
+            viewmodel.getSenderid()
+        );
         super.create(entity);
     }
 
@@ -82,7 +91,19 @@ public class TPersonalLogFacadeREST extends AbstractFacade<TPersonalLog> {
     public String countREST() {
         return String.valueOf(super.count());
     }
-
+    
+    @GET
+    @Path("/getPostsFromOneUser/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Collection<TPersonalLog> getPostsFromOneUser(Long id){
+        
+        EntityManager em = Persistence.createEntityManagerFactory("FacePU").createEntityManager();
+        Query q = em.createNamedQuery("PersonalLog.findFromOneSender");
+        q.setParameter("Sender_id", id);
+        Collection<TPersonalLog> tmp = q.getResultList();
+        return tmp;
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
