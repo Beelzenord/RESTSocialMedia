@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+      
+    <h:head>
+        <title>Facelet Title</title>
+        <style type="text/css">
+            table {
+                width: 100px;
+            }
+            table tr td {
+                height: 14px;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:link value="Index" outcome="main" /><br/>
+        <h:link value="Send Messages" outcome="sendMessage" /><br/>
+        <h:link value="Find Posts" outcome="findPosts" /><br/>
+        <h:form>   
+            <h:commandButton value = "Find Messages"  >
+                <f:ajax event="click" listener="#{inboxBean.getSendersToThisUser}"/>
+                <f:ajax event="click" render="selectList"/>
+            </h:commandButton>
+            <br/>
+            
+            <h:selectOneMenu id="selectList" value="#{inboxBean.senderID}">
+                <f:ajax event="click" listener="#{inboxBean.getMessagesFromOneSender}"/>
+                <f:ajax event="click" render="messageList"/>
+                <f:selectItems value="#{inboxBean.usersWhoSentMessagesToThisUser}" var="element"
+                    itemValue="#{element.id}" itemLabel="#{element.username}"/>
+
+            </h:selectOneMenu>
+                <br/><br/>
+            
+                <br/>
+            <p:dataTable id="messageList" value="#{inboxBean.messageTable}" var="element" styleClass="table">
+                <p:column width="15">
+                    <f:facet name = "header"> Message Text </f:facet> 
+                    #{element.preview}
+                </p:column>
+                <p:column width="15">
+                    <f:facet name = "header"> Time Sent </f:facet> 
+                    #{element.timeSent}
+                </p:column>
+                <p:column width="6">
+                    <f:facet name = "header"> IsRead </f:facet> 
+                    #{element.isRead}
+                </p:column>
+                <p:column width="10" >
+                    <f:facet name = "header"> Read Message </f:facet> 
+                    <h:commandButton value = "Read Message">
+                        <f:ajax event="click" listener="#{inboxBean.presentSingleMessage}"/>
+                        <f:ajax event="click" render="singleMessage"/>
+                        <f:ajax event="click" render="messageList"/>
+                    </h:commandButton>
+                </p:column>
+                    
+                <p:column width="30">
+                </p:column>
+            </p:dataTable>
+                <br/>
+        </h:form>
+        <p:outputLabel id="singleMessage" value="#{inboxBean.singleMessage}" />
+    </h:body>
+</html>
+

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p>Please input your profile details</p>
+        <h:form>
+         Username   <h:inputText value = "#{usersBean.username}"></h:inputText><br/>
+         Password   <h:inputText value = "#{usersBean.pass}"></h:inputText><br/>
+         Occupation   <h:inputText value = "#{usersBean.occupation}"></h:inputText><br/>
+         <h:commandButton value = "Create" action="#{usersBean.addUser()}" ></h:commandButton>
+    
+        </h:form>
+    </h:body>
+</html>
+

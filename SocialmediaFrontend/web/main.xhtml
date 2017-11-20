@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+
+    <h:head>
+        <title>Main</title>
+    </h:head>
+    <h:body>
+        <h:link value="Send New Message" outcome="sendMessage" /><br/>
+        <h:link value="Inbox" outcome="inbox" /><br/>
+        <h:link value="Find Posts" outcome="findPosts" /><br/>
+       <p> About me</p>
+       <p> Username   : #{usersBean.username}</p>
+       <p> Occupation : #{usersBean.occupation}</p><br/><br/>
+       
+      
+       
+       
+       <h:form >
+           <h:inputText value="#{personalLogBean.text}"><br/> </h:inputText>
+           <h:commandButton value ="Post a Log" action = "#{personalLogBean.addPost()}">
+               <f:ajax execute="@form" render = "thisdata"></f:ajax>
+               
+           </h:commandButton>
+              
+       </h:form>
+       
+     
+      <br/>
+      <br/>
+      Previous Posts
+      
+      <p:dataTable  value = "#{personalLogBean.allLogs}" var = "l" id ="thisdata">
+          <p:column>
+              <f:facet name ="header">Time</f:facet>
+              #{l.timePosted}
+          </p:column>
+          <p:column>
+              <f:facet name ="header">Post</f:facet>
+              #{l.text}
+          </p:column>
+      </p:dataTable>
+     
+       
+                           
+       
+    </h:body>
+</html>
+

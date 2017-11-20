@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:link value="Index" outcome="main" /><br/>
+        <h:link value="Inbox" outcome="inbox" /><br/>
+        <h:link value="Find Posts" outcome="findPosts" /><br/>
+        Search for a user to send a message to 
+        <h:form>
+            <h:inputText id="userSearch" size="20" value="#{usersBean.searchForUser}">               
+                <f:ajax event="keyup" listener="#{messageBean.getUsersByContains}"/>
+                <f:ajax event="keyup" render="selectList"/>
+            </h:inputText>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+                 
+            <h:selectOneMenu id="selectList" value="#{messageBean.receiverID}">
+                <f:selectItems value="#{messageBean.usersSelectListBeans}" var="element"
+                    itemValue="#{element.id}" itemLabel="#{element.username}"/>
+            </h:selectOneMenu>
+                <br/><br/>
+            Type your message
+                <br/>
+            <h:inputTextarea id="userText" value ="#{messageBean.messageText}"></h:inputTextarea><br/>
+                <br/><br/>
+            <h:commandButton value = "Send" action="#{messageBean.sendMessageToSelectedUser()}" >
+            </h:commandButton>
+                <br/>
+        </h:form>
+    </h:body>
+</html>
+
