@@ -116,5 +116,12 @@ public class UsersClient {
     public void close() {
         client.close();
     }
+
+    public static String getBASE_URI() {
+        return BASE_URI;
+    }
+
+   
+    
     
 }

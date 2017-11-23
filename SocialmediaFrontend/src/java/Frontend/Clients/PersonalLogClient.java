@@ -27,7 +27,7 @@ public class PersonalLogClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SocialmediaREST/webresources";
+    private static final String BASE_URI = "http://localhost:8080/SocialmediaBackendREST/webresources";
 
     public PersonalLogClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

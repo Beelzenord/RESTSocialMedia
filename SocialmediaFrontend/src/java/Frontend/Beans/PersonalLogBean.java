@@ -90,7 +90,6 @@ public class PersonalLogBean {
         this.usersBeanCollection = usersBean;
     
     }
-    
     public void addPost() {
         TUsers u = usersClient.find_XML(new GenericType<TUsers>(){}, userBean.getId().toString());
         personalLogClient.create_XML(new TPersonalLog(this.text, new Date(), u));
