@@ -21,6 +21,10 @@ import javax.ws.rs.core.GenericType;
 /**
  *
  * @author Niklas
+ * The MessageBean is used to move information to and from sendMessages.xhtml.
+ * MessageBean can use the MessageClient to create new Messages and send them to
+ * the backend REST services. The UsersClient is used to find users to send 
+ * messages to. 
  */
 @ManagedBean
 @SessionScoped
@@ -37,8 +41,8 @@ public class MessageBean {
     private List<TUsers> usersSelectListBeans;
     @ManagedProperty(value="#{usersBean}")
     private UsersBean usersBean;
-    private UsersClient usersClient = new UsersClient();
-    private MessageClient messageClient = new MessageClient();
+    private UsersClient usersClient;
+    private MessageClient messageClient;
 
     private Collection<TMessages> messages;
 
@@ -143,7 +147,9 @@ public class MessageBean {
     }
     
     public void getMessagesFromAll(UsersBean b) {
+        messageClient = new MessageClient();
         messages = messageClient.getMessagesFromAll_XML(new GenericType<Collection<TMessages>>(){}, b.getId().toString());
+        messageClient.close();
     }
     
     public void addNewMessage() {
@@ -152,9 +158,13 @@ public class MessageBean {
         m.setIsRead(false);
         m.setMessageText(messageText);
         m.setTimeSent(new Date());
+        usersClient = new UsersClient();
         m.setSenderid(usersClient.find_XML(new GenericType<TUsers>(){}, usersBean.getId().toString()));
         m.setReceiverid(usersClient.find_XML(new GenericType<TUsers>(){}, receiverID.toString()));
+        usersClient.close();
+        messageClient = new MessageClient();
         messageClient.create_XML(m);
+        messageClient.close();
     }
 
     public String getPreview() {
@@ -167,7 +177,9 @@ public class MessageBean {
     
     public void getUsersByContains() {
         if (usersBean.getSearchForUser().length() > 0) {
+            usersClient = new UsersClient();
             Collection<TUsers> tmp = usersClient.findUsersByContains_XML(new GenericType<Collection<TUsers>>(){}, usersBean.getSearchForUser());
+            usersClient.close();
             usersSelectListBeans = new ArrayList();
             for (TUsers b : tmp) {
                 usersSelectListBeans.add(b);

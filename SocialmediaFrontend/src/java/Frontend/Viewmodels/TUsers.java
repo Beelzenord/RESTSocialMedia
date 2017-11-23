@@ -13,6 +13,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author Niklas
+ * This viewmodel represents Users in the database. 
+ * A user can send messages to other users and create posts to their log.
+ * The user entity has an id, an occupation, a username and a password.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

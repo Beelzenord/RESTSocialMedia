@@ -11,6 +11,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author Niklas
+ * This viewmodel is a representation of a post made to a log of a user. 
+ * A new post has an id, a body text, the time it was posted, the the user 
+ * who posted it. 
  */
 @XmlRootElement
 public class TPersonalLog {

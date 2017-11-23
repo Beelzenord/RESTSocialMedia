@@ -17,6 +17,8 @@ import javax.ws.rs.core.GenericType;
 /**
  *
  * @author fauzianordlund
+ * The UsersBean can handle information concerning TUesrs. For example searching
+ * for a user in the database and logging in a user using the UsersClient
  */
 @ManagedBean
 @SessionScoped
@@ -28,7 +30,7 @@ public class UsersBean {
     private String occupation;
     private String searchForUser;
     private List<TUsers> usersSelectListBeans;
-    private UsersClient client = new UsersClient();
+    private UsersClient usersClient;
     
     /**
      * Creates a new instance of UserBean
@@ -86,10 +88,14 @@ public class UsersBean {
 
     public void addUser(){
         TUsers tmp = new TUsers(this.username, this.pass, this.occupation);
-        client.create_XML(tmp);
+        usersClient = new UsersClient();
+        usersClient.create_XML(tmp);
+        usersClient.close();
     }
     public String logUser() {
-        TUsers Real = client.login_XML(new GenericType<TUsers>(){}, username, pass);
+        usersClient = new UsersClient();
+        TUsers Real = usersClient.login_XML(new GenericType<TUsers>(){}, username, pass);
+        usersClient.close();
 
         if (Real != null) {
             this.id = Real.getId();
@@ -108,7 +114,9 @@ public class UsersBean {
         
     public void getUsersByContains() {
         if (searchForUser.length() > 0) {
-            Collection<TUsers> tmp = client.findUsersByContains_XML(new GenericType<Collection<TUsers>>(){}, searchForUser);
+            usersClient = new UsersClient();
+            Collection<TUsers> tmp = usersClient.findUsersByContains_XML(new GenericType<Collection<TUsers>>(){}, searchForUser);
+            usersClient.close();
             usersSelectListBeans = new ArrayList();
             for (TUsers b : tmp) {
                 usersSelectListBeans.add(b);
