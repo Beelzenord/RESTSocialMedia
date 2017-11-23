@@ -92,7 +92,6 @@ public class PersonalLogBean {
         this.usersBeanCollection = usersBean;
     
     }
-    
     public void addPost() {
         usersClient = new UsersClient();
         TUsers u = usersClient.find_XML(new GenericType<TUsers>(){}, userBean.getId().toString());
