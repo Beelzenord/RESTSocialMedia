@@ -26,7 +26,7 @@ public class Maintest {
     public static void main(String argv[]) {
 
     try {
-      /*  UsersClient c = new UsersClient();
+      /*UsersClient c = new UsersClient();
         Frontend.Viewmodels.TUsers t = new Frontend.Viewmodels.TUsers();
         t.setUsername("t5");
         t.setPass("t5");

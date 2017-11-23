@@ -24,12 +24,17 @@ import static org.junit.Assert.*;
 /**
  *
  * @author fauzianordlund
+ * This class Tests the Personal logs
+ * from the frontend
  */
+
 public class TestLog {
     private PersonalLogClient pc;
     private UsersBean tmpBean;
   
-    
+    /**
+     * Constructor for the testlog
+     */
     public TestLog() {
       PersonalLogClient pc = new PersonalLogClient();
       tmpBean = new UsersBean();   
@@ -37,7 +42,9 @@ public class TestLog {
       tmpBean.setPass("u1");
       tmpBean.logUser();
     }
-    
+    /**
+     * Connects to the url of the backend.
+     */
     @Test
     public void verifyConnectionToBackendSerivec(){
         try {
@@ -51,7 +58,9 @@ public class TestLog {
         
       }
     }
-    
+    /**
+     *  Tests the posting by a user. 
+     */
     @Test
     public void TestPostLog() {
     //first log the user and assume it's that user posting the log
@@ -61,7 +70,10 @@ public class TestLog {
       testLog.setText("test REST");
       testLog.addPost();
     }
-   
+    /**
+     * Tests the retrieval of the log to an
+     * assumed user.
+     */
     @Test
     public void testGetLogs(){
       
@@ -71,8 +83,5 @@ public class TestLog {
       Collection<TPersonalLog> otherUsersLogs = testLog.getLogsOfOtherUser();
       
     }
-    @Test
-    public void additional(){
-        PersonalLogBean testLog = new PersonalLogBean();   
-    }
+   
 }

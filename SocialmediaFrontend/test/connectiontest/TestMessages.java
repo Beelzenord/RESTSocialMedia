@@ -27,6 +27,7 @@ import static org.junit.Assert.*;
 /**
  *
  * @author fauzianordlund
+ * This class Tests the Frontends messages
  */
 public class TestMessages {
     private MessageClient msgTest;
@@ -37,6 +38,9 @@ public class TestMessages {
         msgTest = new MessageClient();
         testMessageBean = new MessageBean();
     }
+    /**
+     * Tests the sending of a message.
+     */
     @Test
     public void sendMessage() {
         long receiverID = new Long(2);
@@ -48,6 +52,9 @@ public class TestMessages {
         testMessageBean.setReceiverID(receiverID);
         testMessageBean.addNewMessage();
     }
+    /**
+     * Tests the retrieval of a message from u3 to u1.
+     */
     @Test
     public void testGetMessage(){
         Collection<TMessages> testMessages = msgTest.getMessagesFromOneSender_XML(new GenericType<Collection<TMessages>>(){}, "1", "3");

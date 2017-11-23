@@ -33,6 +33,9 @@ import static org.junit.Assert.*;
 /**
  *
  * @author fauzianordlund
+ * This class tests user operations on the FRONTENDS
+ * 
+ * side.
  */
 public class TestClient{
     private UsersClient client;
@@ -43,7 +46,10 @@ public class TestClient{
     public TestClient() {
         client = new UsersClient();
     }
-     @Test
+    /**
+     * Tests the url connection to the backend.
+     */
+    @Test
     public void verifyConnectionToBackendSerivec(){
         try {
         URL url = new URL(uri);
@@ -56,13 +62,18 @@ public class TestClient{
         
       }
     }
-    
+    /**
+     * Tests the login of a specific user.
+     */
     @Test
     public void TestLogin(){
       TUsers JunitClient = client.login_XML(new GenericType<TUsers>(){}, "u1", "u1");
        assertEquals("u1", JunitClient.getUsername());
        assertEquals("u1", JunitClient.getPass());
     }
+    /**
+     * Tests the creation of a user.
+     */
     @Test
     public void TestCreate(){
         
@@ -74,6 +85,9 @@ public class TestClient{
       userBean.addUser();
 
     }
+    /**
+     * Tests the removal of the user.
+     */
     @Test
     public void TestRemove(){
         client.remove("2");
