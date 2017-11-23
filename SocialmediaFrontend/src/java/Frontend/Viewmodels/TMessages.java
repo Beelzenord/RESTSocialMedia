@@ -12,6 +12,11 @@ import org.apache.commons.lang3.StringUtils;
 /**
  *
  * @author Niklas
+ * This viewmodel is a representation of a message sent from one user to another. 
+ * A message has an id, a body message, the sender viewmodel and the receiver viewmodel.
+ * A time stamp is taken when the message is sent and stored in the message viewmodel.
+ * The message and be read or not read as well as deleted or not delete, this
+ * is marked with booleans. 
  */
 @XmlRootElement
 public class TMessages {

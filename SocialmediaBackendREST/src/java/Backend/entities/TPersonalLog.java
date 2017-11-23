@@ -21,11 +21,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author fauzianordlund
+ * This entity is a representation of a post made to a log of a user. 
+ * A new post has an id, a body text, the time it was posted, the the user 
+ * who posted it. 
  */
 @Entity
 @Table(name = "T_PersonalLog")
@@ -54,6 +58,7 @@ public class TPersonalLog implements Serializable {
     private Date timePosted;
     @JoinColumn(name = "Sender_id", referencedColumnName = "id")
     @ManyToOne
+    @NotNull
     private TUsers senderid;
 
     public TPersonalLog() {

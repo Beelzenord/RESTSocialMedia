@@ -22,6 +22,9 @@ import javax.ws.rs.core.GenericType;
 /**
  *
  * @author Niklas
+ * The PersonalLogBean is used to create new posts to a users log. It can also
+ * be used to find other users logs. Any users log can be found given you can find
+ * the user when searching for the username. 
  */
 @ManagedBean
 @SessionScoped
@@ -32,9 +35,8 @@ public class PersonalLogBean {
     private String otherLogUsername;
     private Collection<TPersonalLog> personalLogs;
     private Collection<TPersonalLog> otherUsersLogs;
-    private PersonalLogClient personalLogClient = new PersonalLogClient();
-    private UsersClient usersClient = new UsersClient();
-    
+    private PersonalLogClient personalLogClient;
+    private UsersClient usersClient;
     @ManagedProperty(value="#{usersBean}")
     private UsersBean userBean;
     
@@ -91,8 +93,12 @@ public class PersonalLogBean {
     
     }
     public void addPost() {
+        usersClient = new UsersClient();
         TUsers u = usersClient.find_XML(new GenericType<TUsers>(){}, userBean.getId().toString());
+        usersClient.close();
+        personalLogClient = new PersonalLogClient();
         personalLogClient.create_XML(new TPersonalLog(this.text, new Date(), u));
+        personalLogClient.close();
     }
     
     public UsersBean getUserBean() {
@@ -104,18 +110,24 @@ public class PersonalLogBean {
     }
              
     public  Collection<TPersonalLog> getAllLogs(){
+        personalLogClient = new PersonalLogClient();
         this.personalLogs = personalLogClient.getPostsFromOneUsername_XML(new GenericType<Collection<TPersonalLog>>(){}, userBean.getUsername());
+        personalLogClient.close();
         return personalLogs;
     }
     
     public  Collection<TPersonalLog> getLogsOfOtherUser(){
+        personalLogClient = new PersonalLogClient();
         this.otherUsersLogs = personalLogClient.getPostsFromOneUsername_XML(new GenericType<Collection<TPersonalLog>>(){}, userBean.getUsername());
-       return otherUsersLogs;
+        personalLogClient.close();
+        return otherUsersLogs;
     }
 
     
     public void findLogsForOtherUser() {
+        personalLogClient = new PersonalLogClient();
         this.otherUsersLogs = personalLogClient.getPostsFromOneUsername_XML(new GenericType<Collection<TPersonalLog>>(){}, otherLogUsername);
+        personalLogClient.close();
     }
     
     public Collection<TPersonalLog> getOtherUsersLogs() {

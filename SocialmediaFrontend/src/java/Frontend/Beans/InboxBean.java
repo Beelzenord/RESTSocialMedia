@@ -21,6 +21,10 @@ import javax.ws.rs.core.GenericType;
 /**
  *
  * @author Niklas
+ * The InboxBean is used to move information to and from inbox.xhtml.
+ * InboxBean has a @ManagedProperty of both UsersBean and MessageBean to 
+ * gain access to information stored in those beans. MeesageClient is used to
+ * retrieve and send information to the backend REST service. 
  */
 @ManagedBean
 @SessionScoped
@@ -33,10 +37,12 @@ public class InboxBean {
     private MessageBean messageBean;
     private List<TUsers> usersWhoSentMessagesToThisUser;
     private String singleMessage;
-    private MessageClient messageClient = new MessageClient();
+    private MessageClient messageClient;
     
     public void getMessagesFromOneSender() {
+        messageClient = new MessageClient();
         Collection<TMessages> tmp = messageClient.getMessagesFromOneSender_XML(new GenericType<Collection<TMessages>>(){}, usersBean.getId().toString(), senderID.toString());
+        messageClient.close();
         messageTable = new ListDataModel<TMessages>();
         if (tmp.size() > 0) {
             messageTable.setWrappedData(tmp);
@@ -47,13 +53,17 @@ public class InboxBean {
         TMessages b = (TMessages)messageTable.getRowData();
         singleMessage = b.getMessageText();
         if (!b.getIsRead()) {
+            messageClient = new MessageClient();
             messageClient.setMessageToIsRead_XML(b);
+            messageClient.close();
             b.setIsRead(true);
         }
     }
 
     public void getSendersToThisUser() {
+        messageClient = new MessageClient();
         Collection<TMessages> tmp = messageClient.getMessagesFromAll_XML(new GenericType<Collection<TMessages>>(){}, usersBean.getId().toString());
+        messageClient.close();
         usersWhoSentMessagesToThisUser = new ArrayList();
         for (TMessages b : tmp) {
             for (TUsers u : usersWhoSentMessagesToThisUser) {

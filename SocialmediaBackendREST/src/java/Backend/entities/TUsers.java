@@ -21,12 +21,16 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author fauzianordlund
+ * This entity represents Users in the database. 
+ * A user can send messages to other users and create posts to their log.
+ * The user entity has an id, an occupation, a username and a password.
  */
 @Entity
 @Table(name = "T_Users")
@@ -51,9 +55,11 @@ public class TUsers implements Serializable {
     private String occupation;
     @Size(max = 255)
     @Column(name = "pass")
+    @NotNull
     private String pass;
     @Size(max = 255)
     @Column(name = "username")
+    @NotNull
     private String username;
     @JoinTable(name = "T_Friends", joinColumns = {
         @JoinColumn(name = "user_id1", referencedColumnName = "id")}, inverseJoinColumns = {
