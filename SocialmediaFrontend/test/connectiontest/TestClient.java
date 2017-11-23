@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import javax.faces.application.Application;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
+
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import org.apache.catalina.WebResource;
@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
  */
 public class TestClient{
     private UsersClient client;
-    private WebTarget webTarget;
+   
     private Client tmpClient;
     private String uri =  "http://localhost:8080/SocialmediaBackendREST/webresources/";
     
