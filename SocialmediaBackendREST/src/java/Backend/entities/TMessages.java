@@ -27,6 +27,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author fauzianordlund
+ * This entity is a representation of a message sent from one user to another. 
+ * A message has an id, a body message, the sender entity and the receiver entity.
+ * A time stamp is taken when the message is sent and stored in the message entity.
+ * The message and be read or not read as well as deleted or not delete, this
+ * is marked with booleans. 
  */
 @Entity
 @Table(name = "T_Messages")
@@ -65,9 +70,11 @@ public class TMessages implements Serializable {
     private Date timeSent;
     @JoinColumn(name = "Receiver_id", referencedColumnName = "id")
     @ManyToOne
+    @NotNull
     private TUsers receiverid;
     @JoinColumn(name = "Sender_id", referencedColumnName = "id")
     @ManyToOne
+    @NotNull
     private TUsers senderid;
 
     public TMessages() {
