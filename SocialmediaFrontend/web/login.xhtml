@@ -12,6 +12,7 @@
          Password   <h:inputSecret value = "#{usersBean.pass}"></h:inputSecret><br/>
          <h:commandButton value = "Login" action="#{usersBean.logUser()}" >
             <f:actionListener binding="#{messageBean.resetInfo()}" />
+            <f:actionListener binding="#{inboxBean.resetInfo()}" />
          </h:commandButton>
         </h:form>
     </h:body>

@@ -39,6 +39,12 @@ public class InboxBean {
     private String singleMessage;
     private MessageClient messageClient;
     
+    public void resetInfo() {
+        messageTable = new ListDataModel<TMessages>();
+        usersWhoSentMessagesToThisUser = new ArrayList();
+        singleMessage = "";
+    }
+    
     public void getMessagesFromOneSender() {
         messageClient = new MessageClient();
         Collection<TMessages> tmp = messageClient.getMessagesFromOneSender_XML(new GenericType<Collection<TMessages>>(){}, usersBean.getId().toString(), senderID.toString());
@@ -66,11 +72,11 @@ public class InboxBean {
         messageClient.close();
         usersWhoSentMessagesToThisUser = new ArrayList();
         for (TMessages b : tmp) {
-            for (TUsers u : usersWhoSentMessagesToThisUser) {
-                if (u.getId().equals(b.getSenderid().getId()))
-                    usersWhoSentMessagesToThisUser.remove(u);
-            }
-            //if (!usersWhoSentMessagesToThisUser.contains(b.getSenderid()))
+//            for (TUsers u : usersWhoSentMessagesToThisUser) {
+//                if (u.getId().equals(b.getSenderid().getId()))
+//                    usersWhoSentMessagesToThisUser.remove(u);
+//            }
+            if (usersWhoSentMessagesToThisUser.contains(b.getSenderid()) == false)
                 usersWhoSentMessagesToThisUser.add(b.getSenderid());
 
         }
