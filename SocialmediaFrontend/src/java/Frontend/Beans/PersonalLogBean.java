@@ -97,8 +97,9 @@ public class PersonalLogBean {
         TUsers u = usersClient.find_XML(new GenericType<TUsers>(){}, userBean.getId().toString());
         usersClient.close();
         personalLogClient = new PersonalLogClient();
-        personalLogClient.create_XML(new TPersonalLog(this.text, new Date(), u));
+        personalLogClient.create_JSON(new TPersonalLog(this.text, new Date(), u));
         personalLogClient.close();
+        this.text = "";
     }
     
     public UsersBean getUserBean() {

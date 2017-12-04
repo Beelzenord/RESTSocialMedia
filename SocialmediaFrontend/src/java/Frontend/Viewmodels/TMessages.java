@@ -116,6 +116,11 @@ public class TMessages {
     public void setPreview(String preview) {
         this.preview = preview;
     }
+
+    @Override
+    public String toString() {
+        return "TMessages{" + "id=" + id + ", isDeleted=" + isDeleted + ", isRead=" + isRead + ", messageText=" + messageText + ", timeSent=" + timeSent + ", receiverid=" + receiverid + ", senderid=" + senderid + '}';
+    }
     
     
     

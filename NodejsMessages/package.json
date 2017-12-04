@@ -1,0 +1,21 @@
+{
+  "name": "nodejsmessages",
+  "version": "1.0.0",
+  "description": "Nodejs server for TMessages REST",
+  "main": "MessageNodeREST.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.0",
+    "await": "^0.2.6",
+    "express": "^4.16.2",
+    "express-myconnection": "^1.0.4",
+    "express-validator": "^4.3.0",
+    "js-hibernate": "^1.0.14",
+    "json-hierarchy-factory": "^1.0.0",
+    "mysql": "^2.15.0"
+  }
+}

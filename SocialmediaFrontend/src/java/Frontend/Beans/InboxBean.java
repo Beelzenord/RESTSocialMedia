@@ -54,7 +54,7 @@ public class InboxBean {
         singleMessage = b.getMessageText();
         if (!b.getIsRead()) {
             messageClient = new MessageClient();
-            messageClient.setMessageToIsRead_XML(b);
+            messageClient.setMessageToIsRead_JSON(b);
             messageClient.close();
             b.setIsRead(true);
         }
@@ -65,14 +65,16 @@ public class InboxBean {
         Collection<TMessages> tmp = messageClient.getMessagesFromAll_XML(new GenericType<Collection<TMessages>>(){}, usersBean.getId().toString());
         messageClient.close();
         usersWhoSentMessagesToThisUser = new ArrayList();
+        boolean addNewUser = true;
         for (TMessages b : tmp) {
             for (TUsers u : usersWhoSentMessagesToThisUser) {
                 if (u.getId().equals(b.getSenderid().getId()))
-                    usersWhoSentMessagesToThisUser.remove(u);
+                    addNewUser = false;
             }
-            //if (!usersWhoSentMessagesToThisUser.contains(b.getSenderid()))
+            if (addNewUser) 
                 usersWhoSentMessagesToThisUser.add(b.getSenderid());
-
+            else
+                addNewUser = true;
         }
     }
 

@@ -9,6 +9,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 
 /**
  * Jersey REST client generated for REST resource:TUsersFacadeREST
@@ -36,7 +37,7 @@ public class UsersClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SocialmediaBackendREST/webresources";
+    private static final String BASE_URI = "http://localhost:3002/SocialmediaMicro";
 
     public UsersClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -102,7 +103,7 @@ public class UsersClient {
         resource = resource.path(java.text.MessageFormat.format("login/{0}/{1}", new Object[]{username, password}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
-
+    
     /**
      * This method is used to login a user using JSON.
      * @param responseType A GenericType<T> of which type the returnvalue should be of.

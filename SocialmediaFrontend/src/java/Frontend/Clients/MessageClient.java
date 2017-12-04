@@ -9,6 +9,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 
 /**
  * Jersey REST client generated for REST resource:TMessagesFacadeREST
@@ -36,7 +37,7 @@ public class MessageClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SocialmediaBackendREST/webresources";
+    private static final String BASE_URI = "http://localhost:3001/SocialmediaMicro";
 
     public MessageClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

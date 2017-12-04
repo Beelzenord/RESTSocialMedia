@@ -163,7 +163,7 @@ public class MessageBean {
         m.setReceiverid(usersClient.find_XML(new GenericType<TUsers>(){}, receiverID.toString()));
         usersClient.close();
         messageClient = new MessageClient();
-        messageClient.create_XML(m);
+        messageClient.create_JSON(m);
         messageClient.close();
     }
 

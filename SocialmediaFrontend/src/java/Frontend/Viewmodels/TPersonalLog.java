@@ -62,6 +62,11 @@ public class TPersonalLog {
     public void setSenderid(TUsers senderid) {
         this.senderid = senderid;
     }
+
+    @Override
+    public String toString() {
+        return "TPersonalLog{" + "id=" + id + ", text=" + text + ", timePosted=" + timePosted + ", senderid=" + senderid + '}';
+    }
     
     
 }
