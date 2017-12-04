@@ -39,6 +39,12 @@ public class InboxBean {
     private String singleMessage;
     private MessageClient messageClient;
     
+    public void resetInfo() {
+        messageTable = new ListDataModel<TMessages>();
+        usersWhoSentMessagesToThisUser = new ArrayList();
+        singleMessage = "";
+    }
+    
     public void getMessagesFromOneSender() {
         messageClient = new MessageClient();
         Collection<TMessages> tmp = messageClient.getMessagesFromOneSender_XML(new GenericType<Collection<TMessages>>(){}, usersBean.getId().toString(), senderID.toString());
