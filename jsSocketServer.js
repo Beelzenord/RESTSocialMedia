@@ -3,18 +3,7 @@ var console = require('vertx/console');
 //var pump = require('pump');
 var server = vertx.createHttpServer();
 
-server.websocketHandler(new Handler<ServerWebSocket>() {
-    public void handle(ServerWebSocket ws) {
-        if (ws.path().equals("/services/echo")) {
-            Pump.createPump(ws, ws).start();
-        } else {
-            ws.reject();
-        }
-    }
-}).listen(8080, "localhost");
 
-
-/*
 server.websocketHandler(function(websocket) {
     console.log("New Connection");
 
