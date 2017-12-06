@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <script type="text/javascript">
+            var host = "ws://localhost:8083";
+            var wSocket = new WebSocket(host);
+            var count = 0;
+            
+            var myReader = new FileReader();
+            //handler executed once reading(blob content referenced to a variable) from blob is finished. 
+            myReader.addEventListener("loadend", function(e){
+                document.getElementById("text").innerHTML = e.srcElement.result;//prints a string
+            });
+            function init() {
+                wSocket.onopen = function() {
+                    alert(" Web Socket is connected, sending data");
+                    wSocket.send("hello you bastard");
+                };
+                wSocket.onerror = function() {
+                    alert("Fel!");
+                };
+            }
+            
+            // called when a message is received
+            wSocket.onmessage = function(event) {
+                var received_msg = event.data;
+                myReader.readAsText(received_msg);
+                //document.getElementById("text").innerHTML = document.getElementById("text").innerHTML.toString() + getRan().toString();
+                render("text");
+                //alert(myReader.readAsText(received_msg));
+                //alert("hello");
+                //document.getElementById("chat").value = myReader.readAsText(received_msg);
+            };
+            // called when socket closes
+            wSocket.onclose = function() {
+                alert("Connection is closed... lul");
+            }; 
+            function doSend() {
+                //alert("sending");
+                wSocket.send("sending message from client " + getRan().toString());
+            }
+            
+            function getRan() {
+                return count++;
+            }
+        </script>
+    </head>
+    
+    <body>
+        <h3>Hej</h3><br>
+        <form onsubmit="return false">
+            <button onclick="init()">Click me</button><br>
+            <button onclick="doSend()">Send</button><br>
+            <input type="text" id="hej"/><br>
+            <textarea id="chat"></textarea><br>
+        </form>
+        <p id="text"></p>
+    </body>
+</html>
