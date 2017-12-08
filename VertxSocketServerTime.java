@@ -34,7 +34,7 @@ public class VertxSocketServer extends AbstractVerticle {
                 
                 
             }
-        }).listen(8083, "localhost");
+        }).listen(8082, "localhost");
     }
     
     @Override
