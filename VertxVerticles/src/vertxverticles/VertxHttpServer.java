@@ -7,9 +7,11 @@ package vertxverticles;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.ext.web.Router;
 
 /**
  *
@@ -18,19 +20,20 @@ import io.vertx.core.http.HttpServerResponse;
 public class VertxHttpServer extends AbstractVerticle {
     public void start() {
         System.out.println("starting VertxHttpServer");
-        
         HttpServer server = vertx.createHttpServer();
-        server.requestHandler(new Handler<HttpServerRequest>() {
-            public void handle(HttpServerRequest req) {
-                System.out.println("Http request to VertxHttpServer");
-                HttpServerResponse res = req.response();
-                //res.setStatusCode(200);
-                //res.putHeader("content-type", "text/html");
-                res.end("back from VertxHttpServer");
-                /*req.bodyHandler(event -> {
-                   req.response().end(event.toString() + "forom server ");
-                });*/
-            }
-        }).listen(8083, "localhost");
+        Router router = Router.router(vertx);
+
+        router.route().method(HttpMethod.POST).path("/chunk").handler(routingContext -> {
+            routingContext.request().bodyHandler(bHandler -> {
+                HttpServerResponse response = routingContext.response();
+                response.putHeader("content-type", "text/plain");
+                response.putHeader("Access-Control-Allow-Origin", "*");
+                response.putHeader("Access-Control-Allow-Methods", "POST, GET");      
+                response.putHeader("Custom-Header", "Own-Data");
+                response.putHeader("Access-Control-Expose-Headers", "Custom-Header");
+                response.end("Hello World from Vert.x-Web! " + bHandler.toString());
+            });
+        });
+        server.requestHandler(router::accept).listen(8083); 
     }
 }
