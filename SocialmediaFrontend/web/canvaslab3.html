@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+        <script type="text/javascript" src="canvasjs.min.js"></script>
+        <script type="text/javascript">
+    
+        
+            var host = "ws://localhost:8082";
+            var wSocket = new WebSocket(host);
+            var count = 0;
+            var time = performance.now();
+            var async = true;
+            
+            var myReader = new FileReader();
+            var messageSize, hmm = 0, looper = 0;
+            //handler executed once reading(blob content referenced to a variable) from blob is finished. 
+            myReader.addEventListener("loadend", function(e){
+                messageSize = e.srcElement.result.length;
+                //document.getElementById("text").innerHTML = messageSize.toString(); //prints a string
+            });
+            var dataPoints = [], chart, theList = [];
+            var socketAsync = [], socketSync = [];
+            window.onload = function() {
+        
+            chart = new CanvasJS.Chart("chartContainer", {
+                title: {
+                    text: "Socket stream, http request, sync, async"
+                },
+                axisX: {
+                    interval: 1,
+                    title: "Method of sending ", 
+                },
+                axisY: {
+                    interlacedColor: "rgba(1, 77, 101, .2)",
+                    gridColor: "rgba(1, 77, 101,.1)",
+                    title:  "Time for vertx server to send messages back",
+                    suffix: "ms"
+
+                }, 
+                data: [{
+                    type: "bar",
+                    color: "#014D65", 
+                    dataPoints: dataPoints
+                }]
+                
+            });
+            chart.render();
+            
+           } 
+           
+            function updateChart(duration, label) {
+                dataPoints.push({
+                    y: duration, label: label
+                });
+                chart.render();
+                /*dataPoints.pop();
+                dataPoints.pop();
+                dataPoints.push({
+                    y: median(socketAsync), label: "Socket Async"
+                });
+                dataPoints.push({
+                    y: median(socketSync), label: "Socket Sync"
+                });
+                chart.render();*/
+            };
+           
+            function init() {
+                wSocket.onopen = function() {
+                    alert(" Web Socket is connected, sending data");
+                    //wSocket.send("hello you bastard");
+                };
+                wSocket.onerror = function() {
+                    alert("Fel!");
+                };
+            }
+            
+            // called when a message is received
+            wSocket.onmessage = function(event) {
+                if (async) {
+                    if (count < getNrMessages()-1) {
+                        count++;
+                    } 
+                    else {
+                        var timeAsync = performance.now();
+                        var asyncDuration = timeAsync - time;
+                        socketAsync.push(asyncDuration);
+                        updateChart(asyncDuration, "Socket Async\n#" + getNrMessages().toString());
+                        count = 0;
+                        theList = [];
+                    }
+                }
+                else { // if synchronous 
+                    if (count < getNrMessages()-1) {
+                        count++;
+                        doSend();
+                    }
+                    else {
+                        var timeSync = performance.now();
+                        var syncDuration = timeSync - time;
+                        document.getElementById("text").innerHTML = syncDuration;
+                        socketSync.push(syncDuration);
+                        updateChart(syncDuration, "Socket Sync\n#" + getNrMessages().toString());
+                        count = 0;
+                        theList = [];
+                    }
+                }
+            };
+            function median(values) {
+                values.sort(function(a, b) {
+                    return a-b;
+                });
+                
+                var half = Math.floor(values.length/2);
+                
+                if (values.length % 2) 
+                    return values[half];
+                else
+                    return (values[half-1] + values[half]) / 2.0;
+            }
+            // called when socket closes
+            wSocket.onclose = function() {
+                alert("Connection is closed... ");
+            };
+            
+            function doSendSync() {
+                if (document.getElementById("theText").value.length < 1) 
+                    alert("text should be more than 1000 characters");
+                async = false;
+                time = performance.now();
+                doSend();
+            }
+            
+            function doSend() {
+                wSocket.send(document.getElementById("theText").value);
+            }
+            
+            function doSendAsync() {
+                if (document.getElementById("theText").value.length < 1) 
+                    alert("text should be more than 1000 characters");
+                async = true;
+                time = performance.now();
+                var i = 0;
+                for (i = 0; i < getNrMessages(); i++) {
+                    wSocket.send(document.getElementById("theText").value);
+                }
+            }
+            
+            function getRan() {
+                return hmm++;
+            }
+            function getNrMessages() {
+                return document.getElementById("nrOfMessages").value;
+            }
+            
+        //}
+        
+
+        function sendHttp() {
+            alert("sendhttp");
+            /*var client = new HttpClient();
+            client.get("http://localhost:8083", function(res) {
+                alert("doing it");
+                document.getElementById("text").innerHTML = res.toString() + " somehitng more";
+                render("text");
+            });*/
+            httpGetAsync("http://localhost:8083", function(lul)  {
+                alert("doing it");
+                document.getElementById("text").innerHTML = lul.toString() + " somehitng more";
+                render("text");
+            });
+            
+        }
+        function httpTest() {
+            var jsonHttp = new XMLHttpRequest();
+            jsonHttp.open("GET", "localhost:8083", true); // true for asynchronous 
+            jsonHttp.send();
+            alert("0");
+            jsonHttp.addEventListener("readystatechange", processReq, true);
+            alert("1");
+            function processReq(e) {
+                if (jsonHttp.readyState == 4 && jsonHttp.status == 200)  {
+                    alert("callback");
+                    callback(jsonHttp.responseText);
+                }
+                else
+                {
+                    alert("did not work");
+                }
+            }
+            alert("2");
+        }
+    
+</script>
+</head>
+
+<body>
+    <div id="chartContainer" style="height: 300px; width: 100%;" >
+    </div>
+    <br>
+        <h3>Hej</h3><br>
+        <form onsubmit="return false">
+            Number of messages to send (1000 < recommended)<br>
+            <input id="nrOfMessages" type="number"><br>
+            Message text to be sent<br>
+            <input id="theText" type="text"><br>
+            <button onclick="doSendSync()">Send data stream sync</button><br>
+            <button onclick="doSendAsync()">Send data stream async</button><br>
+            <button onclick="httpTest()">Send Http Chunk Request</button><br>
+            
+        </form>
+        <p id="text"></p>
+</body>
+
+</html>
