@@ -180,6 +180,3 @@ app.use('/SocialmediaMicro/entities.tPersonalLog', router);
 var server = app.listen(3003,function(){
     console.log("Listening to port %s",server.address().port);
 });
-
-
-
