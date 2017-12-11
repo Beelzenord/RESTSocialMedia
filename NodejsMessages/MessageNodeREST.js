@@ -130,11 +130,12 @@ curut.delete(function(req, res) {
     }).catch(function (error) {
         res.json();
     });
-})
+});
 
 var curut2 = router.route('/');
 curut2.post(function(req,res,next) {
     console.log(req.body);
+    console.log('using the post request');
     var entity = req.body;
     var entity2 = {
         'messageText' : entity.messageText,
