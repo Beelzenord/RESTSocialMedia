@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script defer type="text/javascript" src="canvasjs.min.js"></script>
+    <script defer type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" >
+
+        var host = "ws://localhost:8085";
+        var wSocket = new WebSocket(host);
+        var count = 0;
+        var time = performance.now();
+        var async = true;
+
+        var messageSize;
+        var dataPoints = [], chart, chartType = "bar";
+        var dataResult;
+
+        window.onload = function() {
+            //barChart();
+        }
+        
+        function setUpChart() {
+            barChart();
+            updateChart();
+        }
+        
+        function barChart() {
+            dataPoints = [];
+            chartType = "bar";
+            chart = new CanvasJS.Chart("chartContainer", {
+                title: {
+                    text: "Socket stream, http request, sync, async"
+                },
+                axisX: {
+                    interval: 1,
+                    title: "Method of sending ", 
+                },
+                axisY: {
+                    interlacedColor: "rgba(1, 77, 101, .2)",
+                    gridColor: "rgba(1, 77, 101,.1)",
+                    title:  "Time for vertx server to send messages back",
+                    suffix: "ms"
+
+                }, 
+                data: [{
+                    type: chartType,
+                    color: "#014D65", 
+                    dataPoints: dataPoints
+                }]
+
+            });
+            chart.render();
+        }
+        
+        function updateChart() {
+            var jsondoc = JSON.parse(dataResult);
+            var tmp = jsondoc.dataPoints;
+            for (i = 0; i < tmp.length; i += 2) {
+                dataPoints.push({
+                    y: tmp[i].duration, label: tmp[i+1].label
+                });
+            }
+            chart.render();
+        };
+
+        function init() {
+            wSocket.onopen = function() {
+                alert(" Web Socket is connected, sending data");
+                //wSocket.send("hello you bastard");
+            };
+            wSocket.onerror = function() {
+                alert("Fel!");
+            };
+        }
+
+        // called when a message is received
+        wSocket.onmessage = function(event) {
+            dataResult = event.data;
+            setUpChart();
+        };
+        
+        // called when socket closes
+        wSocket.onclose = function() {
+            alert("Connection is closed... ");
+        };
+
+        function doSend() {
+            var theID = { id: getUserid() };
+            wSocket.send(JSON.stringify(theID));
+        }
+        
+        function getUserid() {
+            if (document.getElementById("userid").value.length > 0)
+                return document.getElementById("userid").value;
+            else
+                return "1";
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="chartContainer" style="height: 300px; width: 100%;" >
+    </div>
+    <br>
+        <h3>Find Diagrams</h3><br>
+        <form onsubmit="return false">
+            Chart from user <br>
+            <input id="userid" type="number"><br>
+            <button onclick="doSend()">Find chart </button><br>
+        </form>
+        <p id="text"></p><br>
+</body>
+
+</html>

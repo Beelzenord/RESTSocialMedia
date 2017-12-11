@@ -8,6 +8,7 @@
 
         var host = "ws://localhost:8082";
         var wSocket = new WebSocket(host);
+        var saveSocket = new WebSocket("ws://localhost:8084");
         var count = 0;
         var time = performance.now();
         var async = true;
@@ -86,9 +87,16 @@
         function init() {
             wSocket.onopen = function() {
                 alert(" Web Socket is connected, sending data");
-                //wSocket.send("hello you bastard");
             };
             wSocket.onerror = function() {
+                alert("Fel!");
+            };
+        }
+        function initt() {
+            saveSocket.onopen = function() {
+                alert(" Web Socket is connected, sending data");
+            };
+            saveSocket.onerror = function() {
                 alert("Fel!");
             };
         }
@@ -102,7 +110,10 @@
                 else {
                     var timeAsync = performance.now();
                     var asyncDuration = timeAsync - time;
-                    socketAsync.push(asyncDuration);
+                    socketAsync.push({
+                        duration: asyncDuration, 
+                        label: "Socket Async #" + getNrMessages().toString()
+                    });
                     updateChart(asyncDuration, "Socket Async\n#" + getNrMessages().toString());
                     count = 0;
                 }
@@ -115,14 +126,23 @@
                 else {
                     var timeSync = performance.now();
                     var syncDuration = timeSync - time;
-                    document.getElementById("text").innerHTML = syncDuration;
-                    socketSync.push(syncDuration);
+                    socketSync.push({
+                        duration: syncDuration, 
+                        label: "Socket Sync #" + getNrMessages().toString()
+                    });
                     updateChart(syncDuration, "Socket Sync\n#" + getNrMessages().toString());
                     count = 0;
                 }
             }
         };
-
+        
+        saveSocket.onmessage = function(event) {
+            alert("saved to database");
+        };
+        
+        saveSocket.onclose = function() {
+            alert("Connection is closed... ");
+        };
         // called when socket closes
         wSocket.onclose = function() {
             alert("Connection is closed... ");
@@ -137,9 +157,21 @@
                 socketSend();
             }
         }
+        
+        function socketSendChart() {
+            var datavar = { 
+                userid: getUserid(), 
+                theChartType: chartType, 
+                theSocketAsync: socketAsync, 
+                theSocketSync: socketSync, 
+                theHttpAsync: httpAsync,
+                theHttpSync: httpSync
+            };
+            saveSocket.send(JSON.stringify(datavar));
+        }
 
         function socketSend() {
-            wSocket.send(document.getElementById("theText").value);
+            wSocket.send(JSON.stringify(document.getElementById("theText").value));
         }
 
         function socketSendAsync() {
@@ -189,17 +221,14 @@
                     if (async) {
                         if (count < getNrMessages()-1) {
                             count++;
-                        } 
+                        }
                         else {
                             var timeAsync = performance.now();
                             var asyncDuration = timeAsync - time;
                             httpAsync.push({
-                                    duration: asyncDuration
-                               , 
-                                    label: "Http Async #" + getNrMessages().toString()
-                                     
+                                duration: asyncDuration, 
+                                label: "Http Async #" + getNrMessages().toString()
                             });
-                            document.getElementById("text").innerHTML = httpAsync;
                             updateChart(asyncDuration, "Http Async #" + getNrMessages().toString());
                             count = 0;
                         }
@@ -212,8 +241,10 @@
                         else {
                             var timeSync = performance.now();
                             var syncDuration = timeSync - time;
-                            document.getElementById("text").innerHTML = ++count;
-                            httpSync.push(syncDuration);
+                            httpSync.push({
+                                duration: syncDuration, 
+                                label: "Http Sync #" + getNrMessages().toString()
+                            });
                             updateChart(syncDuration, "Http Sync\n#" + getNrMessages().toString());
                             count = 0;
                         }
@@ -225,67 +256,16 @@
                 }
             });
         }
-        
-        function saveToDatabase() {
-            var someid = 1;
-            var datavar = { 
-                        userid: someid
-                    , 
-                    
-                        theChartType: chartType
-                    /*, 
-                    
-                        "theSocketAsync": socketAsync
-                    , 
-                    
-                        theSocketSync: socketSync
-                    , 
-                    
-                        theHttpAsync: httpAsync
-                    ,
-                    
-                        theHttptSync: httpSync*/
-            }; //Array 
-            //document.getElementById("text").innerHTML = "datavar.toString()";
-            //render("text");
-            
-            $.ajax({
-                url : "http://localhost:8083/saveChart",
-                type: "POST",
-                
-                data: JSON.stringify({
-                    name:"Bob",
-                    test:"lksdklsd"
-                }),
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function(data, textStatus, jqXHR)
-                {   
-                    alert("saved to database");
-                },
-                error: function (jqXHR, textStatus, errorThrown)
-                {
-                    alert("fail\n" + jqXHR.toString() + "\n" + textStatus.toString() + "\n" + errorThrown.toString());
-                }
-            });
-        }
 
         function getNrMessages() {
             return document.getElementById("nrOfMessages").value;
         }
-
-        /* not used currently */
-        function median(values) {
-            values.sort(function(a, b) {
-                return a-b;
-            });
-
-            var half = Math.floor(values.length/2);
-
-            if (values.length % 2) 
-                return values[half];
+        
+        function getUserid() {
+            if (document.getElementById("userid").value.length > 0)
+                return document.getElementById("userid").value;
             else
-                return (values[half-1] + values[half]) / 2.0;
+                return "1";
         }
     </script>
 </head>
@@ -294,7 +274,7 @@
     <div id="chartContainer" style="height: 300px; width: 100%;" >
     </div>
     <br>
-        <h3>Hej</h3><br>
+        <h3>Make a diagram</h3><br>
         <form onsubmit="return false">
             Number of messages to send (> 100)<br>
             <input id="nrOfMessages" type="number"><br>
@@ -304,7 +284,9 @@
             <button onclick="socketSendSync()">Send Socket stream Synchronous</button><br>
             <button onclick="httpSendAsync()">Send Http Chunk Asynchronous </button><br>
             <button onclick="httpSendSync()">Send Http Chunk Synchronous </button><br><br>
-            <button onclick="saveToDatabase()">Save chart to database using http chunk </button><br>
+            Id<br>
+            <input id="userid" type="number"><br>
+            <button onclick="socketSendChart()">Save chart to database </button><br>
         </form>
         <p id="text"></p>
 </body>
