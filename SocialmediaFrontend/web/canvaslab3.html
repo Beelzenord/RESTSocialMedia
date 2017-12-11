@@ -3,7 +3,7 @@
 
 <head>
     <script defer type="text/javascript" src="canvasjs.min.js"></script>
-    <script defer type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script defer type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" >
 
         var host = "ws://localhost:8082";
@@ -13,12 +13,17 @@
         var async = true;
 
         var messageSize;
-        var dataPoints = [], chart;
+        var dataPoints = [], chart, chartType = "bar";
         /* Use these to save chart to database */
         var socketAsync = [], socketSync = [];
         var httpAsync = [], httpSync = [];
 
         window.onload = function() {
+            barChart();
+        } 
+        
+        function barChart() {
+            chartType = "bar";
             chart = new CanvasJS.Chart("chartContainer", {
                 title: {
                     text: "Socket stream, http request, sync, async"
@@ -35,14 +40,41 @@
 
                 }, 
                 data: [{
-                    type: "bar",
+                    type: chartType,
                     color: "#014D65", 
                     dataPoints: dataPoints
                 }]
 
             });
             chart.render();
-        } 
+        }
+        
+        function otherChart() {
+            chartType = "Column";
+            chart = new CanvasJS.Chart("chartContainer", {
+                title: {
+                    text: "Socket stream, http request, sync, async"
+                },
+                axisX: {
+                    interval: 1,
+                    title: "Method of sending ", 
+                },
+                axisY: {
+                    interlacedColor: "rgba(1, 77, 101, .2)",
+                    gridColor: "rgba(1, 77, 101,.1)",
+                    title:  "Time for vertx server to send messages back",
+                    suffix: "ms"
+
+                }, 
+                data: [{
+                    type: chartType,
+                    color: "#014D65", 
+                    dataPoints: dataPoints
+                }]
+
+            });
+            chart.render();
+        }
 
         function updateChart(duration, label) {
             dataPoints.push({
@@ -161,8 +193,14 @@
                         else {
                             var timeAsync = performance.now();
                             var asyncDuration = timeAsync - time;
-                            httpAsync.push(asyncDuration);
-                            updateChart(asyncDuration, "Http Async\n#" + getNrMessages().toString());
+                            httpAsync.push({
+                                    duration: asyncDuration
+                               , 
+                                    label: "Http Async #" + getNrMessages().toString()
+                                     
+                            });
+                            document.getElementById("text").innerHTML = httpAsync;
+                            updateChart(asyncDuration, "Http Async #" + getNrMessages().toString());
                             count = 0;
                         }
                     }
@@ -184,6 +222,50 @@
                 error: function (jqXHR, textStatus, errorThrown)
                 {
                     alert("fail") ; 
+                }
+            });
+        }
+        
+        function saveToDatabase() {
+            var someid = 1;
+            var datavar = { 
+                        userid: someid
+                    , 
+                    
+                        theChartType: chartType
+                    /*, 
+                    
+                        "theSocketAsync": socketAsync
+                    , 
+                    
+                        theSocketSync: socketSync
+                    , 
+                    
+                        theHttpAsync: httpAsync
+                    ,
+                    
+                        theHttptSync: httpSync*/
+            }; //Array 
+            //document.getElementById("text").innerHTML = "datavar.toString()";
+            //render("text");
+            
+            $.ajax({
+                url : "http://localhost:8083/saveChart",
+                type: "POST",
+                
+                data: JSON.stringify({
+                    name:"Bob",
+                    test:"lksdklsd"
+                }),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR)
+                {   
+                    alert("saved to database");
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert("fail\n" + jqXHR.toString() + "\n" + textStatus.toString() + "\n" + errorThrown.toString());
                 }
             });
         }
@@ -221,7 +303,8 @@
             <button onclick="socketSendAsync()">Send Socket stream Asynchronous</button><br>
             <button onclick="socketSendSync()">Send Socket stream Synchronous</button><br>
             <button onclick="httpSendAsync()">Send Http Chunk Asynchronous </button><br>
-            <button onclick="httpSendSync()">Send Http Chunk Synchronous </button><br>
+            <button onclick="httpSendSync()">Send Http Chunk Synchronous </button><br><br>
+            <button onclick="saveToDatabase()">Save chart to database using http chunk </button><br>
         </form>
         <p id="text"></p>
 </body>

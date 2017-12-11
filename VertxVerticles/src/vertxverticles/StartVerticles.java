@@ -16,6 +16,7 @@ public class StartVerticles {
         Vertx vertx = Vertx.vertx();
         vertx.deployVerticle(new VertxSocketServer());
         vertx.deployVerticle(new VertxHttpServer());
+//        vertx.deployVerticle(new VertxDB());
     }
     
 }
