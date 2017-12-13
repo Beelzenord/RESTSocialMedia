@@ -1,8 +1,8 @@
 var express = require('express'),
-path = require('path'),
-bodyParser = require('body-parser'),
-app = express(),
-expressValidator = require('express-validator');
+    path = require('path'),
+    bodyParser = require('body-parser'),
+    app = express(),
+    expressValidator = require('express-validator');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true })); //support x-www-form-urlencoded
@@ -16,18 +16,18 @@ var dbconfig = {
     user: "root",
     password: "root",
     database: "socialmedia",
-    typeCast: function castField( field, useDefaultTypeCasting ) {
+    typeCast: function castField(field, useDefaultTypeCasting) {
         // We only want to cast bit fields that have a single-bit in them. If the field
         // has more than one bit, then we cannot assume it is supposed to be a Boolean.
-        if ( ( field.type === "BIT" ) && ( field.length === 1 ) ) {
+        if ((field.type === "BIT") && (field.length === 1)) {
             var bytes = field.buffer();
             // A Buffer in Node represents a collection of 8-bit unsigned integers.
             // Therefore, our single "bit field" comes back as the bits '0000 0001',
             // which is equivalent to the number 1.
-            return( bytes[ 0 ] === 1 );
+            return (bytes[0] === 1);
         }
 
-        return( useDefaultTypeCasting() );
+        return (useDefaultTypeCasting());
     }
 };
 
@@ -54,35 +54,35 @@ function toJsonTree(result) {
 
 /*** not used for TUsers ***/
 function jsonBranch(tUserss, row, num) {
-    tUserss.push( 
+    tUserss.push(
         tUsers = {
-            id : row.id, 
-            isRead : row.isRead,
-            isDeleted : row.isDeleted,
-            messageText : row.messageText,
-            timeSent : row.timeSent,
-            receiverid : {
-                id : row.rid,
-                occupation : row.roccupation,
-                pass : row.rpass,
-                username : row.rusername
+            id: row.id,
+            isRead: row.isRead,
+            isDeleted: row.isDeleted,
+            messageText: row.messageText,
+            timeSent: row.timeSent,
+            receiverid: {
+                id: row.rid,
+                occupation: row.roccupation,
+                pass: row.rpass,
+                username: row.rusername
             },
-            senderid : {
-                id : row.sid,
-                occupation : row.soccupation,
-                pass : row.spass,
-                username : row.susername
+            senderid: {
+                id: row.sid,
+                occupation: row.soccupation,
+                pass: row.spass,
+                username: row.susername
             }
         }
     );
 }
 
-app.get('/',function(req,res){
+app.get('/', function(req, res) {
     res.send('Welcome to users');
 });
-    
+
 //RESTful route
-var router = express.Router(); 
+var router = express.Router();
 
 router.use(function(req, res, next) {
     console.log(req.method, req.url);
@@ -90,45 +90,45 @@ router.use(function(req, res, next) {
 });
 
 var curut = router.route('/:id');
-curut.get(function(req,res,next){
+curut.get(function(req, res, next) {
     var id = req.params.id;
     var query = session.query(userMap).
-        where(
-            userMap.id.Equal(id)
-        );
-    query.then(function(result){
+    where(
+        userMap.id.Equal(id)
+    );
+    query.then(function(result) {
         res.json(result[0]);
-    }).catch(function(error){
+    }).catch(function(error) {
         console.log('Error: ' + error);
     });
 });
 
-curut.post(function(req,res,next) {
+curut.post(function(req, res, next) {
     //console.log(req.body);
     var entity = req.body;
     var entity2 = {
-        'occupation' : entity.occupation,
-        'pass' : entity.pass, 
-        'username' : entity.username, 
+        'occupation': entity.occupation,
+        'pass': entity.pass,
+        'username': entity.username,
     };
     entityMap.Insert(entity2).then(function(result) {
         console.log("inserted: " + result.affectedRows);
         res.json();
-    }).catch(function (error) {
+    }).catch(function(error) {
         res.json();
     });
 });
 
 var curut2 = router.route('/login/:username/:password');
-curut2.get(function(req,res,next) {
+curut2.get(function(req, res, next) {
     var username = req.params.username;
     var password = req.params.password;
 
     var query = session.query(userMap)
-    .where(
-        userMap.pass.Equal(password) 
-    );
-    
+        .where(
+            userMap.pass.Equal(password)
+        );
+
     query.then(function(result) {
         res.json(result[0]);
     }).catch(function(error) {
@@ -140,7 +140,7 @@ curut2.get(function(req,res,next) {
 
 
 var curut3 = router.route('/getUsersByContains/:searchString');
-curut3.get(function(req,res,next) {
+curut3.get(function(req, res, next) {
     var searchString = req.params.searchString;
 
     var str = "SELECT * FROM t_users WHERE username LIKE '%"+searchString+"%'";
@@ -158,9 +158,6 @@ curut3.get(function(req,res,next) {
 app.use('/SocialmediaMicro/entities.tusers', router);
 
 //start Server
-var server = app.listen(3002,function(){
-    console.log("Listening to port %s",server.address().port);
+var server = app.listen(3002, function() {
+    console.log("Listening to port %s", server.address().port);
 });
-
-
-

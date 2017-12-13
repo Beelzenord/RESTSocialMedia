@@ -9,14 +9,14 @@ var io = socketIo.listen(server);
 server.listen(3000);
 // add directory with our static files
 app.use(express.static(__dirname + '/public'));
-console.log("Server running on 127.0.0.1:8080");
+console.log("Server running on 127.0.0.1:3000");
 
 // array of all lines drawn
 var line_history = [];
 
 // event-handler for new incoming connections
 io.on('connection', function(socket) {
-
+    console.log('client was connected to port 3000');
     // first send the history to the new client
     for (var i in line_history) {
         socket.emit('draw_line', { line: line_history[i] });

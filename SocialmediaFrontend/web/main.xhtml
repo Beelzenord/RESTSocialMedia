@@ -12,8 +12,9 @@
         <title>Main</title>
     </h:head>
     <h:body>
-        <h:link value="Create diagrams" outcome="canvaslab3.html" /><br/>
+         <h:link value="Create diagrams" outcome="canvaslab3.html" /><br/>
         <h:link value="Find other peoples diagrams" outcome="showgraph.html" /><br/>
+        <h:link value="Send New Message" outcome="sendMessage" /><br/>
         <h:link value="Inbox" outcome="inbox" /><br/>
         <h:link value="Find Posts" outcome="findPosts" /><br/>
         <h:link value ="Goto Canvas Drawer" outcome="drawer.html" /><br></br>
@@ -27,8 +28,7 @@
        <h:form >
            <h:inputText value="#{personalLogBean.text}"><br/> </h:inputText>
            <h:commandButton value ="Post a Log" action = "#{personalLogBean.addPost()}">
-               <f:ajax execute="@form" render = "thisdata"></f:ajax>
-               
+               <f:ajax execute="@form" render = "thisdata"></f:ajax>   
            </h:commandButton>
               
        </h:form>
@@ -48,10 +48,7 @@
               #{l.text}
           </p:column>
       </p:dataTable>
-     
-       
-                           
-       
+    
     </h:body>
 </html>
 

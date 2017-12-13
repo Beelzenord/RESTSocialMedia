@@ -12,6 +12,7 @@
 >>>>>>> c77fa679b5c4d2c0dacec771c709d685fc7d7df0
 /VertxVerticles/nbproject/private/
 /VertxVerticles/build/
+<<<<<<< HEAD
 /DockerVerticles/VertxGetGraphVerticle/nbproject/private/
 /DockerVerticles/VertxGetGraph/nbproject/private/
 /DockerVerticles/VertxGetGraph/build/
@@ -24,3 +25,18 @@
 /DockerVerticles/VertxSocketDB/nbproject/private/
 /DockerVerticles/VertxSocketDB/build/
 /DockerVerticles/VertxSocketDB/dist/
+=======
+/ClientAttemptCopy/nbproject/private/
+/SocialmediaREST/nbproject/private/
+/NodejsPersonalLog/nbproject/private/
+/nodeCanvas/nbproject/private/
+/NodejsPersonalLog/node_modules/
+/NodejsMessages/nbproject/private/
+/NodejsUsers/nbproject/private/
+/NodejsMessages/node_modules/
+/NodejsUsers/node_modules/
+/Nodejstests/NodejsMessages/nbproject/private/
+/RestProject/nbproject/private/
+/Nodejstests/NodejsMessages/node_modules/
+/VertxVerticles/dist/
+>>>>>>> 3b88d91dabeac8e3f012806056cd91527f0b6df3

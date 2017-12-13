@@ -36,7 +36,7 @@ public class PersonalLogClient {
     private WebTarget webTarget;
     private Client client;
     private static String localhost = "localhost";
-    private static String dockerhost = "192.168.99.100";
+    private static String dockerhost = "192.168.99.100"; //5431
     private static final String BASE_URI = "http://"+dockerhost+":3003/SocialmediaMicro/";
 
     public PersonalLogClient() {

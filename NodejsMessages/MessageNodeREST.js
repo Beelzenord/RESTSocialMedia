@@ -1,8 +1,8 @@
 var express = require('express'),
-path = require('path'),
-bodyParser = require('body-parser'),
-app = express(),
-expressValidator = require('express-validator');
+    path = require('path'),
+    bodyParser = require('body-parser'),
+    app = express(),
+    expressValidator = require('express-validator');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true })); //support x-www-form-urlencoded
@@ -16,18 +16,18 @@ var dbconfig = {
     user: "root",
     password: "root",
     database: "socialmedia",
-    typeCast: function castField( field, useDefaultTypeCasting ) {
+    typeCast: function castField(field, useDefaultTypeCasting) {
         // We only want to cast bit fields that have a single-bit in them. If the field
         // has more than one bit, then we cannot assume it is supposed to be a Boolean.
-        if ( ( field.type === "BIT" ) && ( field.length === 1 ) ) {
+        if ((field.type === "BIT") && (field.length === 1)) {
             var bytes = field.buffer();
             // A Buffer in Node represents a collection of 8-bit unsigned integers.
             // Therefore, our single "bit field" comes back as the bits '0000 0001',
             // which is equivalent to the number 1.
-            return( bytes[ 0 ] === 1 );
+            return (bytes[0] === 1);
         }
 
-        return( useDefaultTypeCasting() );
+        return (useDefaultTypeCasting());
     }
 };
 
@@ -64,35 +64,35 @@ function toJsonTree(result) {
 
 /*** Create a json branch for this entity including TUsers ***/
 function jsonBranch(tMessagess, row, num) {
-    tMessagess.push( 
+    tMessagess.push(
         tMessages = {
-            id : row.id, 
-            isRead : row.isRead,
-            isDeleted : row.isDeleted,
-            messageText : row.messageText,
-            timeSent : row.timeSent,
-            receiverid : {
-                id : row.rid,
-                occupation : row.roccupation,
-                pass : row.rpass,
-                username : row.rusername
+            id: row.id,
+            isRead: row.isRead,
+            isDeleted: row.isDeleted,
+            messageText: row.messageText,
+            timeSent: row.timeSent,
+            receiverid: {
+                id: row.rid,
+                occupation: row.roccupation,
+                pass: row.rpass,
+                username: row.rusername
             },
-            senderid : {
-                id : row.sid,
-                occupation : row.soccupation,
-                pass : row.spass,
-                username : row.susername
+            senderid: {
+                id: row.sid,
+                occupation: row.soccupation,
+                pass: row.spass,
+                username: row.susername
             }
         }
     );
 }
 
-app.get('/',function(req,res){
+app.get('/', function(req, res) {
     res.send('Welcome to messages');
 });
-    
+
 //RESTful route
-var router = express.Router(); 
+var router = express.Router();
 
 router.use(function(req, res, next) {
     console.log(req.method, req.url);
@@ -101,7 +101,7 @@ router.use(function(req, res, next) {
 
 var curut = router.route('/:id');
 
-curut.get(function(req,res,next){
+curut.get(function(req, res, next) {
     var id = req.params.id;
 
     var str = 'SELECT m.id, m.isRead, m.isDeleted, m.messageText, m.timeSent, ' + 
@@ -112,10 +112,10 @@ curut.get(function(req,res,next){
     'INNER JOIN t_users s ON s.id = m.Sender_id WHERE m.id = ' + id;
     var query = session.executeSql(str);
 
-    query.then(function(result){
+    query.then(function(result) {
         var jsonresult = toJsonTree(result);
         res.json(jsonresult[0]);
-    }).catch(function(error){
+    }).catch(function(error) {
         console.log('Error: ' + error);
         res.json();
     });
@@ -128,31 +128,32 @@ curut.delete(function(req, res) {
     query.then(function(result) {
         console.log("deleted: " + id);
         res.json();
-    }).catch(function (error) {
+    }).catch(function(error) {
         res.json();
     });
 });
 
 var curut2 = router.route('/');
-curut2.post(function(req,res,next) {
+curut2.post(function(req, res, next) {
     console.log(req.body);
+    console.log('using the post request');
     var entity = req.body;
     var entity2 = {
-        'messageText' : entity.messageText,
-        'timeSent' : entity.timeSent, 
-        'Receiver_id' : entity.receiverid.id, 
-        'Sender_id' : entity.senderid.id
+        'messageText': entity.messageText,
+        'timeSent': entity.timeSent,
+        'Receiver_id': entity.receiverid.id,
+        'Sender_id': entity.senderid.id
     };
     entityMap.Insert(entity2).then(function(result) {
         console.log("inserted: " + result.affectedRows);
         res.json();
-    }).catch(function (error) {
+    }).catch(function(error) {
         res.json();
     });
 });
 
 var curut3 = router.route('/getMessagesFromOneSender/:receiver_id/:sender_id');
-curut3.get(function(req,res,next) {
+curut3.get(function(req, res, next) {
     var rece_id = req.params.receiver_id;
     var send_id = req.params.sender_id;
 
@@ -179,7 +180,7 @@ curut3.get(function(req,res,next) {
 
 
 var curut4 = router.route('/getMessagesFromAll/:receiver_id');
-curut4.get(function(req,res,next) {
+curut4.get(function(req, res, next) {
     var rece_id = req.params.receiver_id;
 
     /*var rece_id = req.params.receiver_id;*/
@@ -205,7 +206,7 @@ curut4.get(function(req,res,next) {
 
 
 var curut5 = router.route('/setMessageToIsRead');
-curut5.post(function(req,res,next) {
+curut5.post(function(req, res, next) {
     var id = req.body.id;
     var str = "UPDATE t_messages SET isRead = true WHERE id = " + id;
     var query = session.executeSql(str);
@@ -222,9 +223,6 @@ curut5.post(function(req,res,next) {
 app.use('/SocialmediaMicro/entities.tMessages', router);
 
 //start Server
-var server = app.listen(3001,function(){
-    console.log("Listening to port %s",server.address().port);
+var server = app.listen(3001, function() {
+    console.log("Listening to port %s", server.address().port);
 });
-
-
-
