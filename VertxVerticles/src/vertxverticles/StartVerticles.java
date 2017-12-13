@@ -15,8 +15,9 @@ public class StartVerticles {
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
         vertx.deployVerticle(new VertxSocketServer());
+        vertx.deployVerticle(new VertxSocketDB());
         vertx.deployVerticle(new VertxHttpServer());
-//        vertx.deployVerticle(new VertxDB());
+        vertx.deployVerticle(new VertxGetGraph());
     }
     
 }
