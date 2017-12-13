@@ -37,7 +37,7 @@ public class UsersClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:3002/SocialmediaMicro";
+    private static final String BASE_URI = "http://localhost:5430/SocialmediaMicro";
 
     public UsersClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

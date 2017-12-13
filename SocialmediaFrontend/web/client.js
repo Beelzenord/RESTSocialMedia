@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var context = canvas.getContext('2d');
     var width = window.innerWidth;
     var height = window.innerHeight;
-    var socket = io.connect('http://localhost:3000', { reconnect: true });
+    var socket = io.connect('http://localhost:8223', { reconnect: true });
 
 
     // set canvas to full browser width/height

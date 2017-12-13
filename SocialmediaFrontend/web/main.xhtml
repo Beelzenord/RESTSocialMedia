@@ -26,8 +26,7 @@
        <h:form >
            <h:inputText value="#{personalLogBean.text}"><br/> </h:inputText>
            <h:commandButton value ="Post a Log" action = "#{personalLogBean.addPost()}">
-               <f:ajax execute="@form" render = "thisdata"></f:ajax>
-               
+               <f:ajax execute="@form" render = "thisdata"></f:ajax>   
            </h:commandButton>
               
        </h:form>
@@ -47,10 +46,7 @@
               #{l.text}
           </p:column>
       </p:dataTable>
-     
-       
-                           
-       
+    
     </h:body>
 </html>
 
