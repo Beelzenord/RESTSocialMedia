@@ -1,0 +1,22 @@
+docker build -t socketserver/socket-server .
+docker run -t -i -p 8082:8082 socketserver/socket-server:latest
+
+docker build -t httpserver/http-server .
+docker run -t -i -p 8083:8083 httpserver/http-server:latest
+
+docker build -t socketdbserver/socketdb-server .
+docker run -t -i -p 8084:8084 socketdbserver/socketdb-server:latest
+
+docker build -t getgraph1/get-graph .
+docker run -t -i -p 8085:8085 getgraph1/get-graph:latest
+
+docker build -t nodemessages/nodejsmessages .
+docker run -p 3001:3001 -d nodemessages/nodejsmessages
+
+docker build -t nodeusers/nodejsusers .
+docker run -p 3002:3002 -d nodeusers/nodejsusers
+
+docker build -t nodepersonallog/nodejspersonallog .
+docker run -p 3003:3003 -d nodepersonallog/nodejspersonallog
+
+

@@ -5,10 +5,10 @@
     <script defer type="text/javascript" src="canvasjs.min.js"></script>
     <script defer type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" >
-
-        var host = "ws://localhost:8082";
+        var hosturl = "192.168.99.100";
+        var host = "ws://"+hosturl+":8082";
         var wSocket = new WebSocket(host);
-        var saveSocket = new WebSocket("ws://localhost:8084");
+        var saveSocket = new WebSocket("ws://"+hosturl+":8084");
         var count = 0;
         var time = performance.now();
         var async = true;
@@ -141,11 +141,11 @@
         };
         
         saveSocket.onclose = function() {
-            alert("Connection is closed... ");
+            alert("Connection to savesocket is closed... ");
         };
         // called when socket closes
         wSocket.onclose = function() {
-            alert("Connection is closed... ");
+            alert("Connection to socket is closed... ");
         };
 
         function socketSendSync() {
@@ -213,7 +213,7 @@
         function doHttpPost() {
             var datavar = document.getElementById("theText").value; //Array 
             $.ajax({
-                url : "http://localhost:8083/chunk",
+                url : "http://"+hosturl+":8083/chunk",
                 type: "POST",
                 data : datavar,
                 success: function(data, textStatus, jqXHR)

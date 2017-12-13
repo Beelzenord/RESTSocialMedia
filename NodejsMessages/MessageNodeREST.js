@@ -11,7 +11,8 @@ app.use(expressValidator());
 
 var dbconfig = {
     // sometimes localhost, sometimes 127.0.0.1
-    host: "127.0.0.1",
+    host: "192.168.99.100",
+    port : "32769",
     user: "root",
     password: "root",
     database: "socialmedia",
@@ -33,14 +34,14 @@ var dbconfig = {
 var jsORM = require('js-hibernate');
 var session = jsORM.session(dbconfig);
 
-var userMap = session.tableMap('T_Users')
+var userMap = session.tableMap('t_users')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
 .columnMap('id', 'id') 
 .columnMap('occupation', 'occupation')
 .columnMap('pass', 'pass')
 .columnMap('username', 'username');
 
-var entityMap = session.tableMap('T_Messages')
+var entityMap = session.tableMap('t_messages')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
 .columnMap('id', 'id') 
 .columnMap('isRead', 'isRead')
@@ -106,9 +107,9 @@ curut.get(function(req,res,next){
     var str = 'SELECT m.id, m.isRead, m.isDeleted, m.messageText, m.timeSent, ' + 
     'r.id AS rid, r.occupation AS roccupation, r.pass AS rpass, r.username AS rusername, ' + 
     's.id AS sid, s.occupation AS soccupation, s.pass AS spass, s.username AS susername ' +
-    'FROM T_Messages m ' +
-    'INNER JOIN T_Users r ON r.id = m.Receiver_id ' +
-    'INNER JOIN T_Users s ON s.id = m.Sender_id WHERE m.id = ' + id;
+    'FROM t_messages m ' +
+    'INNER JOIN t_users r ON r.id = m.Receiver_id ' +
+    'INNER JOIN t_users s ON s.id = m.Sender_id WHERE m.id = ' + id;
     var query = session.executeSql(str);
 
     query.then(function(result){
@@ -122,7 +123,7 @@ curut.get(function(req,res,next){
 
 curut.delete(function(req, res) {
     var id = req.params.id;
-    var str = "DELETE FROM socialmedia.T_Messages WHERE id = " + id;
+    var str = "DELETE FROM socialmedia.t_messages WHERE id = " + id;
     var query = session.executeSql(str);
     query.then(function(result) {
         console.log("deleted: " + id);
@@ -130,7 +131,7 @@ curut.delete(function(req, res) {
     }).catch(function (error) {
         res.json();
     });
-})
+});
 
 var curut2 = router.route('/');
 curut2.post(function(req,res,next) {
@@ -158,9 +159,9 @@ curut3.get(function(req,res,next) {
     var str = 'SELECT m.id, m.isRead, m.isDeleted, m.messageText, m.timeSent, ' + 
     'r.id AS rid, r.occupation AS roccupation, r.pass AS rpass, r.username AS rusername, ' + 
     's.id AS sid, s.occupation AS soccupation, s.pass AS spass, s.username AS susername ' +
-    'FROM T_Messages m ' +
-    'INNER JOIN T_Users r ON r.id = m.Receiver_id ' +
-    'INNER JOIN T_Users s ON s.id = m.Sender_id WHERE m.Receiver_id = ' + rece_id + 
+    'FROM t_messages m ' +
+    'INNER JOIN t_users r ON r.id = m.Receiver_id ' +
+    'INNER JOIN t_users s ON s.id = m.Sender_id WHERE m.Receiver_id = ' + rece_id + 
     ' AND m.Sender_id = ' + send_id;
     var query = session.executeSql(str);
     query.then(function(result) {
@@ -185,9 +186,9 @@ curut4.get(function(req,res,next) {
     var str = 'SELECT m.id, m.isRead, m.isDeleted, m.messageText, m.timeSent, ' + 
     'r.id AS rid, r.occupation AS roccupation, r.pass AS rpass, r.username AS rusername, ' + 
     's.id AS sid, s.occupation AS soccupation, s.pass AS spass, s.username AS susername ' +
-    'FROM T_Messages m ' +
-    'INNER JOIN T_Users r ON r.id = m.Receiver_id ' +
-    'INNER JOIN T_Users s ON s.id = m.Sender_id WHERE m.Receiver_id = ' + rece_id;
+    'FROM t_messages m ' +
+    'INNER JOIN t_users r ON r.id = m.Receiver_id ' +
+    'INNER JOIN t_users s ON s.id = m.Sender_id WHERE m.Receiver_id = ' + rece_id;
     var query = session.executeSql(str);
     //var query = session.query(entityMap).select();
     query.then(function(result) {
@@ -206,7 +207,7 @@ curut4.get(function(req,res,next) {
 var curut5 = router.route('/setMessageToIsRead');
 curut5.post(function(req,res,next) {
     var id = req.body.id;
-    var str = "UPDATE T_Messages SET isRead = true WHERE id = " + id;
+    var str = "UPDATE t_messages SET isRead = true WHERE id = " + id;
     var query = session.executeSql(str);
     query.then(function(result) {
         console.log("updated: " + id);

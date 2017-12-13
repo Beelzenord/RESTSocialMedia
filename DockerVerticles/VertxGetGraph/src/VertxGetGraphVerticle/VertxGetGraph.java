@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vertxverticles;
+package VertxGetGraphVerticle;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
@@ -34,15 +34,13 @@ public class VertxGetGraph extends AbstractVerticle {
                     getGraph(Long.parseLong(id), ws);
                 });
             }
-        }).listen(8085, "localhost");
+        }).listen(8085);
     }
     
     private void getGraph(Long id, ServerWebSocket ws) {
         vertx.executeBlocking(future -> {
             try {
-                System.out.println("3");
                 Connection myConn = DriverManager.getConnection("jdbc:mysql://192.168.99.100:32769/socialmedia?useSSL=false", "root", "root");
-                System.out.println("4");
                 java.sql.ResultSet rs = null;
                 PreparedStatement p = null;
                 String graph = "SELECT * FROM t_graphs WHERE Sender_id LIKE ?;";
@@ -83,6 +81,6 @@ public class VertxGetGraph extends AbstractVerticle {
     
     @Override
     public void stop() {
-        
+        System.out.println("VertxGetGraph stopped");
     }
 }

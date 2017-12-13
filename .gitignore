@@ -12,3 +12,15 @@
 >>>>>>> c77fa679b5c4d2c0dacec771c709d685fc7d7df0
 /VertxVerticles/nbproject/private/
 /VertxVerticles/build/
+/DockerVerticles/VertxGetGraphVerticle/nbproject/private/
+/DockerVerticles/VertxGetGraph/nbproject/private/
+/DockerVerticles/VertxGetGraph/build/
+/DockerVerticles/VertxGetGraph/dist/
+/DockerVerticles/VertxSocketServer/nbproject/private/
+/DockerVerticles/VertxSocketServer/dist/
+/DockerVerticles/VertxHttpServer/nbproject/private/
+/DockerVerticles/VertxHttpServer/build/
+/DockerVerticles/VertxHttpServer/dist/
+/DockerVerticles/VertxSocketDB/nbproject/private/
+/DockerVerticles/VertxSocketDB/build/
+/DockerVerticles/VertxSocketDB/dist/

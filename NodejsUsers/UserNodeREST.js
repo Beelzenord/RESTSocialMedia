@@ -11,7 +11,8 @@ app.use(expressValidator());
 
 var dbconfig = {
     // sometimes localhost, sometimes 127.0.0.1
-    host: "localhost",
+    host: "192.168.99.100",
+    port : "32769",
     user: "root",
     password: "root",
     database: "socialmedia",
@@ -33,7 +34,7 @@ var dbconfig = {
 var jsORM = require('js-hibernate');
 var session = jsORM.session(dbconfig);
 
-var userMap = session.tableMap('T_Users')
+var userMap = session.tableMap('t_users')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
 .columnMap('id', 'id') 
 .columnMap('occupation', 'occupation')
@@ -142,7 +143,7 @@ var curut3 = router.route('/getUsersByContains/:searchString');
 curut3.get(function(req,res,next) {
     var searchString = req.params.searchString;
 
-    var str = "SELECT * FROM T_Users WHERE username LIKE '%"+searchString+"%'";
+    var str = "SELECT * FROM t_users WHERE username LIKE '%"+searchString+"%'";
     var query = session.executeSql(str);
     query.then(function(result) {
         res.json(result);

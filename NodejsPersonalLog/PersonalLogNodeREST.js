@@ -11,7 +11,8 @@ app.use(expressValidator());
 
 var dbconfig = {
     // sometimes localhost, sometimes 127.0.0.1
-    host: "127.0.0.1",
+    host: "192.168.99.100",
+    port : "32769",
     user: "root",
     password: "root",
     database: "socialmedia",
@@ -33,14 +34,14 @@ var dbconfig = {
 var jsORM = require('js-hibernate');
 var session = jsORM.session(dbconfig);
 
-var userMap = session.tableMap('T_Users')
+var userMap = session.tableMap('t_users')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
 .columnMap('id', 'id') 
 .columnMap('occupation', 'occupation')
 .columnMap('pass', 'pass')
 .columnMap('username', 'username');
 
-var entityMap = session.tableMap('T_PersonalLog')
+var entityMap = session.tableMap('t_personallog')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
 .columnMap('id', 'id') 
 .columnMap('text', 'text')
@@ -49,19 +50,19 @@ var entityMap = session.tableMap('T_PersonalLog')
 
 /*** Create a Json document for with all entities ***/
 function toJsonTree(result) {
-    var tPersonalLogs = [];
+    var tpersonallogs = [];
     for (i = 0; i < result.length; i++) {
-        jsonBranch(tPersonalLogs, result[i], i);
+        jsonBranch(tpersonallogs, result[i], i);
     }
     //console.log("tmess: ");
-    //console.log(tPersonalLogs);
-    return tPersonalLogs;
+    //console.log(tpersonallogs);
+    return tpersonallogs;
 }
 
 /*** Create a json branch for this entity including TUsers ***/
-function jsonBranch(tPersonalLogs, row, num) {
-    tPersonalLogs.push( 
-        tPersonalLog = {
+function jsonBranch(tpersonallogs, row, num) {
+    tpersonallogs.push( 
+        tpersonallog = {
             id : row.id, 
             text : row.text,
             timePosted : row.timePosted,
@@ -91,10 +92,10 @@ var curut = router.route('/:id');
 curut.get(function(req,res,next){
     var id = req.params.id;
 
-    var str = 'SELECT p.id, p.text, p.timeSent, ' + 
+    var str = 'SELECT p.id, p.text, p.timePosted, ' + 
     's.id AS sid, s.occupation AS soccupation, s.pass AS spass, s.username AS susername ' +
-    'FROM T_PersonalLog p ' +
-    'INNER JOIN T_Users s ON s.id = p.Sender_id WHERE p.id = ' + id;
+    'FROM t_personallog p ' +
+    'INNER JOIN t_users s ON s.id = p.Sender_id WHERE p.id = ' + id;
     
     var query = session.executeSql(str);
     query.then(function(result){
@@ -108,7 +109,7 @@ curut.get(function(req,res,next){
 
 curut.delete(function(req, res) {
     var id = req.params.id;
-    var str = "DELETE FROM socialmedia.T_PersonalLog WHERE id = " + id;
+    var str = "DELETE FROM socialmedia.t_personallog WHERE id = " + id;
     var query = session.executeSql(str);
     query.then(function(result) {
         console.log("deleted: " + id);
@@ -116,7 +117,7 @@ curut.delete(function(req, res) {
     }).catch(function (error) {
         res.json();
     });
-})
+});
 
 var curut2 = router.route('/');
 curut2.post(function(req,res,next) {
@@ -140,8 +141,8 @@ curut3.get(function(req,res,next) {
 
     var str = 'SELECT p.id, p.text, p.timePosted, ' + 
     's.id AS sid, s.occupation AS soccupation, s.pass AS spass, s.username AS susername ' +
-    'FROM T_PersonalLog p ' +
-    'INNER JOIN T_Users s ON s.id = p.Sender_id WHERE s.id = ' + id;
+    'FROM t_personallog p ' +
+    'INNER JOIN t_users s ON s.id = p.Sender_id WHERE s.id = ' + id;
     
     var query = session.executeSql(str);
     query.then(function(result) {
@@ -159,8 +160,8 @@ curut4.get(function(req,res,next) {
 
     var str = 'SELECT p.id, p.text, p.timePosted, ' + 
     's.id AS sid, s.occupation AS soccupation, s.pass AS spass, s.username AS susername ' +
-    'FROM T_PersonalLog p ' +
-    "INNER JOIN T_Users s ON s.id = p.Sender_id WHERE s.username LIKE '"+ username+"'";
+    'FROM t_personallog p ' +
+    "INNER JOIN t_users s ON s.id = p.Sender_id WHERE s.username LIKE '"+ username+"'";
     
     var query = session.executeSql(str);
     query.then(function(result) {

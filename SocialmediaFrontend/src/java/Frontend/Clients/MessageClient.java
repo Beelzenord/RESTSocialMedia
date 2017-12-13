@@ -37,7 +37,9 @@ public class MessageClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:3001/SocialmediaMicro";
+    private static String localhost = "localhost";
+    private static String dockerhost = "192.168.99.100";
+    private static final String BASE_URI = "http://"+dockerhost+":3001/SocialmediaMicro";
 
     public MessageClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
