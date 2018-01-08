@@ -10,12 +10,11 @@ app.use(bodyParser.json());
 app.use(expressValidator());
 
 var dbconfig = {
-    // sometimes localhost, sometimes 127.0.0.1
-    host: "192.168.99.100",
-    port : "32769",
-    user: "root",
-    password: "root",
-    database: "socialmedia",
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASSWORD,
+    database: process.env.SQL_DATABASE,
+    socketPath: `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`,
+    
     typeCast: function castField(field, useDefaultTypeCasting) {
         // We only want to cast bit fields that have a single-bit in them. If the field
         // has more than one bit, then we cannot assume it is supposed to be a Boolean.
@@ -36,14 +35,14 @@ var session = jsORM.session(dbconfig);
 
 var userMap = session.tableMap('t_users')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
-.columnMap('id', 'id') 
+.columnMap('id', 'id', { isAutoIncrement: true })
 .columnMap('occupation', 'occupation')
 .columnMap('pass', 'pass')
 .columnMap('username', 'username');
 
 var entityMap = session.tableMap('t_personallog')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
-.columnMap('id', 'id') 
+.columnMap('id', 'id', { isAutoIncrement: true })
 .columnMap('text', 'text')
 .columnMap('timePosted', 'timePosted')
 .columnMap('Sender_id', 'Sender_id');  
@@ -54,8 +53,6 @@ function toJsonTree(result) {
     for (i = 0; i < result.length; i++) {
         jsonBranch(tpersonallogs, result[i], i);
     }
-    //console.log("tmess: ");
-    //console.log(tpersonallogs);
     return tpersonallogs;
 }
 
@@ -115,6 +112,7 @@ curut.delete(function(req, res) {
         console.log("deleted: " + id);
         res.json();
     }).catch(function(error) {
+        console.log('Error: ' + error);
         res.json();
     });
 });
@@ -124,13 +122,13 @@ curut2.post(function(req, res, next) {
     var entity = req.body;
     var entity2 = {
         'text': entity.text,
-        'timePosted': entity.timePosted,
         'Sender_id': entity.senderid.id
     };
     entityMap.Insert(entity2).then(function(result) {
         console.log("inserted: " + result.affectedRows);
         res.json();
     }).catch(function(error) {
+        console.log('Error: ' + error);
         res.json();
     });
 });
@@ -176,8 +174,8 @@ curut4.get(function(req, res, next) {
 
 //now we need to apply our router here
 app.use('/SocialmediaMicro/entities.tPersonalLog', router);
-
+const PORT = process.env.PORT || 8080;
 //start Server
-var server = app.listen(3003, function() {
+var server = app.listen(PORT, function() {
     console.log("Listening to port %s", server.address().port);
 });

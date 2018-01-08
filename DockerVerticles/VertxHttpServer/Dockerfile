@@ -15,7 +15,7 @@ ENV VERTICLE_FILE dist/VertxHttpServer.jar
 # Set the location of the verticles
 ENV VERTICLE_HOME /usr/verticles
 
-EXPOSE 8083
+EXPOSE 8080
 
 # Copy your verticle to the container
 COPY $VERTICLE_FILE $VERTICLE_HOME/

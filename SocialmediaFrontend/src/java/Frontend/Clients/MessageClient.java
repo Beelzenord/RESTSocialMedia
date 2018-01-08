@@ -37,9 +37,10 @@ public class MessageClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static String localhost = "localhost";
-    private static String dockerhost = "192.168.99.100"; //5432
-    private static final String BASE_URI = "http://"+dockerhost+":3001/SocialmediaMicro";
+    private static String localhost = "http://localhost:8080";
+    private static String dockerhost = "http://192.168.99.100:8080"; //5432
+    private static String cloudhost = "http://nodejsmessages-dot-vital-valor-188709.appspot.com";
+    private static final String BASE_URI = cloudhost+"/SocialmediaMicro";
 
     public MessageClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

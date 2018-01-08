@@ -10,12 +10,11 @@ app.use(bodyParser.json());
 app.use(expressValidator());
 
 var dbconfig = {
-    // sometimes localhost, sometimes 127.0.0.1
-    host: "192.168.99.100",
-    port : "32769",
-    user: "root",
-    password: "root",
-    database: "socialmedia",
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASSWORD,
+    database: process.env.SQL_DATABASE,
+    socketPath: `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`,
+
     typeCast: function castField(field, useDefaultTypeCasting) {
         // We only want to cast bit fields that have a single-bit in them. If the field
         // has more than one bit, then we cannot assume it is supposed to be a Boolean.
@@ -36,7 +35,7 @@ var session = jsORM.session(dbconfig);
 
 var userMap = session.tableMap('t_users')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
-.columnMap('id', 'id') 
+.columnMap('id', 'id', { isAutoIncrement: true })
 .columnMap('occupation', 'occupation')
 .columnMap('pass', 'pass')
 .columnMap('username', 'username');
@@ -47,8 +46,6 @@ function toJsonTree(result) {
     for (i = 0; i < result.length; i++) {
         jsonBranch(tUserss, result[i], i);
     }
-    //console.log("tmess: ");
-    //console.log(tUserss);
     return tUserss;
 }
 
@@ -77,7 +74,7 @@ function jsonBranch(tUserss, row, num) {
     );
 }
 
-app.get('/', function(req, res) {
+app.get( '/', function(req, res) {
     res.send('Welcome to users');
 });
 
@@ -100,11 +97,11 @@ curut.get(function(req, res, next) {
         res.json(result[0]);
     }).catch(function(error) {
         console.log('Error: ' + error);
+        res.json();
     });
 });
 
 curut.post(function(req, res, next) {
-    //console.log(req.body);
     var entity = req.body;
     var entity2 = {
         'occupation': entity.occupation,
@@ -115,6 +112,7 @@ curut.post(function(req, res, next) {
         console.log("inserted: " + result.affectedRows);
         res.json();
     }).catch(function(error) {
+        console.log('Error: ' + error);
         res.json();
     });
 });
@@ -142,7 +140,6 @@ curut2.get(function(req, res, next) {
 var curut3 = router.route('/getUsersByContains/:searchString');
 curut3.get(function(req, res, next) {
     var searchString = req.params.searchString;
-
     var str = "SELECT * FROM t_users WHERE username LIKE '%"+searchString+"%'";
     var query = session.executeSql(str);
     query.then(function(result) {
@@ -156,8 +153,8 @@ curut3.get(function(req, res, next) {
 
 //now we need to apply our router here
 app.use('/SocialmediaMicro/entities.tusers', router);
-
+const PORT = process.env.PORT || 8080;
 //start Server
-var server = app.listen(3002, function() {
+var server = app.listen(PORT, function() {
     console.log("Listening to port %s", server.address().port);
 });

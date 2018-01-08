@@ -10,12 +10,10 @@ app.use(bodyParser.json());
 app.use(expressValidator());
 
 var dbconfig = {
-    // sometimes localhost, sometimes 127.0.0.1
-    host: "192.168.99.100",
-    port : "32769",
-    user: "root",
-    password: "root",
-    database: "socialmedia",
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASSWORD,
+    database: process.env.SQL_DATABASE,
+    socketPath: `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`,
     typeCast: function castField(field, useDefaultTypeCasting) {
         // We only want to cast bit fields that have a single-bit in them. If the field
         // has more than one bit, then we cannot assume it is supposed to be a Boolean.
@@ -36,14 +34,14 @@ var session = jsORM.session(dbconfig);
 
 var userMap = session.tableMap('t_users')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
-.columnMap('id', 'id') 
+.columnMap('id', 'id', { isAutoIncrement: true })
 .columnMap('occupation', 'occupation')
 .columnMap('pass', 'pass')
 .columnMap('username', 'username');
 
 var entityMap = session.tableMap('t_messages')
 // columnMap(object-name-property, table-name-property, optional-property-config) 
-.columnMap('id', 'id') 
+.columnMap('id', 'id', { isAutoIncrement: true })
 .columnMap('isRead', 'isRead')
 .columnMap('isDeleted', 'isDeleted')
 .columnMap('messageText', 'messageText')
@@ -57,8 +55,6 @@ function toJsonTree(result) {
     for (i = 0; i < result.length; i++) {
         jsonBranch(tMessagess, result[i], i);
     }
-    //console.log("tmess: ");
-    //console.log(tMessagess);
     return tMessagess;
 }
 
@@ -129,6 +125,7 @@ curut.delete(function(req, res) {
         console.log("deleted: " + id);
         res.json();
     }).catch(function(error) {
+        console.log('Error: ' + error);
         res.json();
     });
 });
@@ -136,11 +133,9 @@ curut.delete(function(req, res) {
 var curut2 = router.route('/');
 curut2.post(function(req, res, next) {
     console.log(req.body);
-    console.log('using the post request');
     var entity = req.body;
     var entity2 = {
         'messageText': entity.messageText,
-        'timeSent': entity.timeSent,
         'Receiver_id': entity.receiverid.id,
         'Sender_id': entity.senderid.id
     };
@@ -148,6 +143,7 @@ curut2.post(function(req, res, next) {
         console.log("inserted: " + result.affectedRows);
         res.json();
     }).catch(function(error) {
+        concole.log(error);
         res.json();
     });
 });
@@ -176,8 +172,6 @@ curut3.get(function(req, res, next) {
     });
 
 });
-
-
 
 var curut4 = router.route('/getMessagesFromAll/:receiver_id');
 curut4.get(function(req, res, next) {
@@ -214,6 +208,7 @@ curut5.post(function(req, res, next) {
         console.log("updated: " + id);
         res.json();
     }).catch(function(err) {
+        console.log('Error: ' + error);
         res.json();
     });
 });
@@ -221,8 +216,8 @@ curut5.post(function(req, res, next) {
 
 //now we need to apply our router here
 app.use('/SocialmediaMicro/entities.tMessages', router);
-
+const PORT = process.env.PORT || 8080;
 //start Server
-var server = app.listen(3001, function() {
+var server = app.listen(PORT, function() {
     console.log("Listening to port %s", server.address().port);
 });

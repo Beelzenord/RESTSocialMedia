@@ -11,6 +11,7 @@ import Frontend.Viewmodels.TMessages;
 import Frontend.Viewmodels.TUsers;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -37,7 +38,7 @@ public class MessageBean {
     private String preview;
     private boolean isRead;
     private boolean isDeleted;
-    private Date timeSent;
+    private LocalDateTime timeSent;
     private List<TUsers> usersSelectListBeans;
     @ManagedProperty(value="#{usersBean}")
     private UsersBean usersBean;
@@ -122,11 +123,11 @@ public class MessageBean {
         this.isDeleted = isDeleted;
     }
 
-    public Date getTimeSent() {
+    public LocalDateTime getTimeSent() {
         return timeSent;
     }
 
-    public void setTimeSent(Date timeSent) {
+    public void setTimeSent(LocalDateTime timeSent) {
         this.timeSent = timeSent;
     }
 
@@ -148,7 +149,7 @@ public class MessageBean {
     
     public void getMessagesFromAll(UsersBean b) {
         messageClient = new MessageClient();
-        messages = messageClient.getMessagesFromAll_XML(new GenericType<Collection<TMessages>>(){}, b.getId().toString());
+        messages = messageClient.getMessagesFromAll_JSON(new GenericType<Collection<TMessages>>(){}, b.getId().toString());
         messageClient.close();
     }
     
@@ -159,8 +160,8 @@ public class MessageBean {
         m.setMessageText(messageText);
         m.setTimeSent(new Date());
         usersClient = new UsersClient();
-        m.setSenderid(usersClient.find_XML(new GenericType<TUsers>(){}, usersBean.getId().toString()));
-        m.setReceiverid(usersClient.find_XML(new GenericType<TUsers>(){}, receiverID.toString()));
+        m.setSenderid(usersClient.find_JSON(new GenericType<TUsers>(){}, usersBean.getId().toString()));
+        m.setReceiverid(usersClient.find_JSON(new GenericType<TUsers>(){}, receiverID.toString()));
         usersClient.close();
         messageClient = new MessageClient();
         messageClient.create_JSON(m);

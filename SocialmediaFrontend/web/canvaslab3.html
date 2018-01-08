@@ -5,10 +5,12 @@
     <script defer type="text/javascript" src="canvasjs.min.js"></script>
     <script defer type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" >
-        var hosturl = "192.168.99.100";
-        var host = "ws://"+hosturl+":8082";
-        var wSocket = new WebSocket(host);
-        var saveSocket = new WebSocket("ws://"+hosturl+":8084");
+        var hosturl = "https://nodejsserver-dot-vital-valor-188709.appspot.com";
+        var chunkurl = "https://vertxhttpserver-dot-vital-valor-188709.appspot.com";
+        //var hosturl = "localhost:8082";
+        //var host = "ws://"+hosturl+":8082";
+        //var wSocket = new WebSocket(host);
+        //var saveSocket = new WebSocket("ws://"+hosturl+":8084");
         var count = 0;
         var time = performance.now();
         var async = true;
@@ -149,8 +151,8 @@
         };
 
         function socketSendSync() {
-            if (getNrMessages() < 100) 
-                alert("text should be more than 100 characters");
+            if (getNrMessages() < 1) 
+                alert("text should be more than 1 characters");
             else {
                 async = false;
                 time = performance.now();
@@ -175,8 +177,8 @@
         }
 
         function socketSendAsync() {
-            if (getNrMessages() < 100) 
-                alert("text should be more than 100 characters");
+            if (getNrMessages() < 1) 
+                alert("text should be more than 1 characters");
             else {
                 async = true;
                 time = performance.now();
@@ -188,8 +190,8 @@
         }
 
         function httpSendAsync() {
-            if (getNrMessages() < 100) 
-                alert("text should be more than 100 characters");
+            if (getNrMessages() < 1) 
+                alert("text should be more than 1 characters");
             else {
                 async = true;
                 time = performance.now();
@@ -201,8 +203,8 @@
         }
 
         function httpSendSync() {
-            if (getNrMessages() < 100) 
-                alert("text should be more than 100 characters");
+            if (getNrMessages() < 1) 
+                alert("text should be more than 1 characters");
             else {
                 async = false;
                 time = performance.now();
@@ -213,7 +215,7 @@
         function doHttpPost() {
             var datavar = document.getElementById("theText").value; //Array 
             $.ajax({
-                url : "http://"+hosturl+":8083/chunk",
+                url : chunkurl+"/chunk",
                 type: "POST",
                 data : datavar,
                 success: function(data, textStatus, jqXHR)
@@ -256,6 +258,34 @@
                 }
             });
         }
+        
+        function sendChart() {
+            var datavar = { 
+                userid: getUserid(), 
+                theChartType: chartType, 
+                //theSocketAsync: socketAsync, 
+                //theSocketSync: socketSync, 
+                theHttpAsync: httpAsync,
+                theHttpSync: httpSync
+            };
+            
+            
+            $.ajax({
+                url : hosturl+"/graph/savetodb",
+                type: "POST",
+                data : datavar, //JSON.stringify(datavar),
+                success: function(data, textStatus, jqXHR)
+                {
+                    alert("Saved to db");
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert("fail"); 
+                }
+            });
+            
+            //saveSocket.send(JSON.stringify(datavar));
+        }
 
         function getNrMessages() {
             return document.getElementById("nrOfMessages").value;
@@ -266,6 +296,8 @@
                 return document.getElementById("userid").value;
             else
                 return "1";
+            //<button onclick="socketSendAsync()">Send Socket stream Asynchronous</button><br>
+            //<button onclick="socketSendSync()">Send Socket stream Synchronous</button><br>
         }
     </script>
 </head>
@@ -280,13 +312,13 @@
             <input id="nrOfMessages" type="number"><br>
             Message text to be sent<br>
             <input id="theText" type="text"><br>
-            <button onclick="socketSendAsync()">Send Socket stream Asynchronous</button><br>
-            <button onclick="socketSendSync()">Send Socket stream Synchronous</button><br>
+            
+            
             <button onclick="httpSendAsync()">Send Http Chunk Asynchronous </button><br>
             <button onclick="httpSendSync()">Send Http Chunk Synchronous </button><br><br>
             Id<br>
             <input id="userid" type="number"><br>
-            <button onclick="socketSendChart()">Save chart to database </button><br>
+            <button onclick="sendChart()">Save chart to database </button><br>
         </form>
         <p id="text"></p>
 </body>

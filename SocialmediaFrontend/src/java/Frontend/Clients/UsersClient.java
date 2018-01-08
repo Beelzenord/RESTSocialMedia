@@ -37,9 +37,11 @@ public class UsersClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static String localhost = "localhost";
-    private static String dockerhost = "192.168.99.100"; //5430
-    private static final String BASE_URI = "http://"+dockerhost+":3002/SocialmediaMicro";
+    private static String localhost = "http://localhost:8080";
+    private static String dockerhost = "http://192.168.99.100:8080"; //5432
+    private static String cloudhost = "http://nodejsusers-dot-vital-valor-188709.appspot.com";
+    private static final String BASE_URI = cloudhost+"/SocialmediaMicro";
+
 
     public UsersClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -147,6 +149,11 @@ public class UsersClient {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
+    public <T> T findUsersByContains_JSON(GenericType<T> responseType, String searchString) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("getUsersByContains/{0}", new Object[]{searchString}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
     public void close() {
         client.close();
     }

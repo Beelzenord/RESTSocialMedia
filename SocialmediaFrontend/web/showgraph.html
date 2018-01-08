@@ -5,9 +5,11 @@
     <script defer type="text/javascript" src="canvasjs.min.js"></script>
     <script defer type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" >
-
-        var host = "ws://192.168.99.100:8085";
-        var wSocket = new WebSocket(host);
+ 	
+        var host = "ws://localhost:8081";
+        var hosturl = "https://nodejsserver-dot-vital-valor-188709.appspot.com"
+        
+        //var wSocket = new WebSocket(host);
         var count = 0;
         var time = performance.now();
         var async = true;
@@ -96,6 +98,28 @@
             else
                 return "1";
         }
+        
+        function getGraph() {
+            var datavar = {
+                id: getUserid()
+            };
+            var singlevar = getUserid();
+            
+            $.ajax({
+                url : hosturl+"/graph/getgraph",
+                type: "POST",
+                data : datavar,//JSON.stringify(datavar),
+                success: function(data, textStatus, jqXHR)
+                {
+                    dataResult = data;
+                    setUpChart();
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert("could not retreive graph"); 
+                }
+            });
+        }
 
     </script>
 </head>
@@ -108,7 +132,7 @@
         <form onsubmit="return false">
             Chart from user <br>
             <input id="userid" type="number"><br>
-            <button onclick="doSend()">Find chart </button><br>
+            <button onclick="getGraph()">Find chart </button><br>
         </form>
         <p id="text"></p><br>
 </body>

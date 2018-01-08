@@ -15,9 +15,7 @@ import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.event.ActionEvent;
 import javax.ws.rs.core.GenericType;
-//import static org.slf4j.helpers.Util.report;
 
 /**
  *
@@ -112,14 +110,14 @@ public class PersonalLogBean {
              
     public  Collection<TPersonalLog> getAllLogs(){
         personalLogClient = new PersonalLogClient();
-        this.personalLogs = personalLogClient.getPostsFromOneUsername_XML(new GenericType<Collection<TPersonalLog>>(){}, userBean.getUsername());
+        this.personalLogs = personalLogClient.getPostsFromOneUsername_JSON(new GenericType<Collection<TPersonalLog>>(){}, userBean.getUsername());
         personalLogClient.close();
         return personalLogs;
     }
     
     public  Collection<TPersonalLog> getLogsOfOtherUser(){
         personalLogClient = new PersonalLogClient();
-        this.otherUsersLogs = personalLogClient.getPostsFromOneUsername_XML(new GenericType<Collection<TPersonalLog>>(){}, userBean.getUsername());
+        this.otherUsersLogs = personalLogClient.getPostsFromOneUsername_JSON(new GenericType<Collection<TPersonalLog>>(){}, userBean.getUsername());
         personalLogClient.close();
         return otherUsersLogs;
     }
@@ -127,7 +125,7 @@ public class PersonalLogBean {
     
     public void findLogsForOtherUser() {
         personalLogClient = new PersonalLogClient();
-        this.otherUsersLogs = personalLogClient.getPostsFromOneUsername_XML(new GenericType<Collection<TPersonalLog>>(){}, otherLogUsername);
+        this.otherUsersLogs = personalLogClient.getPostsFromOneUsername_JSON(new GenericType<Collection<TPersonalLog>>(){}, otherLogUsername);
         personalLogClient.close();
     }
     

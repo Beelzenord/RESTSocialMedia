@@ -94,9 +94,8 @@ public class UsersBean {
     }
     public String logUser() {
         usersClient = new UsersClient();
-        TUsers Real = usersClient.login_XML(new GenericType<TUsers>(){}, username, pass);
+        TUsers Real = usersClient.login_JSON(new GenericType<TUsers>(){}, username, pass);
         usersClient.close();
-
         if (Real != null) {
             this.id = Real.getId();
             this.occupation = Real.getOccupation();

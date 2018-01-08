@@ -35,9 +35,11 @@ public class PersonalLogClient {
 
     private WebTarget webTarget;
     private Client client;
-    private static String localhost = "localhost";
-    private static String dockerhost = "192.168.99.100"; //5431
-    private static final String BASE_URI = "http://"+dockerhost+":3003/SocialmediaMicro/";
+    private static String localhost = "http://localhost:8080";
+    private static String dockerhost = "http://192.168.99.100:8080"; //5432
+    private static String cloudhost = "http://nodejspersonallog-dot-vital-valor-188709.appspot.com";
+    private static final String BASE_URI = cloudhost+"/SocialmediaMicro";
+
 
     public PersonalLogClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -117,6 +119,12 @@ public class PersonalLogClient {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
     
+    public <T> T getPostsFromOneUser_JSON(GenericType<T> responseType, String id) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("getPostsFromOneUser/{0}", new Object[]{id}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+    
     /**
      * The method is used to find posts made by a user using their username as a search value.
      * @param responseType A GenericType<T> of which type the returnvalue should be of.
@@ -128,6 +136,12 @@ public class PersonalLogClient {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("getPostsFromOneUsername/{0}", new Object[]{username}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+    
+    public <T> T getPostsFromOneUsername_JSON(GenericType<T> responseType, String username) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("getPostsFromOneUsername/{0}", new Object[]{username}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public void close() {
