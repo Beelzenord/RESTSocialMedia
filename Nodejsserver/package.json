@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "express-validator": "^4.3.0",
     "js-hibernate": "^1.0.14",
 	"mysql": "^2.15.0"
